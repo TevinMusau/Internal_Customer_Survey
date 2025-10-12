@@ -130,7 +130,7 @@
         <div class="mb-5">
             <div class="row" style="background-color: black">
                 <div class="col-4 mt-2 mb-3 text-center">
-                    <a href="{{ route('home')}}"> <img src="{{ asset('Logo/MMAN_Temp_Logo.png') }}"  class="img-fluid w-50 text-center " alt="MMAN Advocates Logo"></a>
+                    <a href="{{ route('home')}}"> <img src="{{ asset('Logo/MMAN_Logo.png') }}"  class="img-fluid w-50 text-center " alt="MMAN Advocates Logo"></a>
                 </div>
                 <div class="col-8 mt-5">
                     <div class="navbar justify-content-end">
@@ -180,7 +180,7 @@
         <div class="container-fluid">
             <div class="row text-center">
                 <div class="col-md-4">
-                    <a href="{{ '/home' }}"><img class="w-100" src="{{ asset('/Logo/MMAN_Temp_Logo.png') }}"/></a>
+                    <a href="{{ '/home' }}"><img class="w-75" src="{{ asset('/Logo/MMAN_Logo.png') }}"/></a>
 
                     <hr style="color: white">
                     <h5 style="color: #FFE4E1"> Our Social Media </h5>
