@@ -38,14 +38,15 @@ class AuthManager extends Controller
                 return redirect()->intended(url('dashboard/'.auth()->user()->id))->with('success', 'Login Successful!');
 
             } else if (auth()->user()->level == 'staffAdmin') {
-                // return redirect()->intended(route('dashboard'))->with('success', 'Login Successful!');
+                return redirect()->intended(url('dashboard/'.auth()->user()->id))->with('success', 'Login Successful!');
 
             } else if (auth()->user()->level == 'regularAdmin') {
-                // return redirect()->intended(route('dashboard'))->with('success', 'Login Successful!');
+                return redirect()->intended(url('dashboard/'.auth()->user()->id))->with('success', 'Login Successful!');
 
             } else {
-                // return redirect()->intended(route('dashboard'))->with('success', 'Login Successful!');
-            }
+                return redirect()->intended(route('dashboard/'.auth()->user()->id))->with('success', 'Login Successful!');
+            }            
+        } else {
             // if not successful, redirect to the login page with an error message
             return redirect(route('login'))->with('error', 'Login Details Incorrect! Please Try Again');
         }

@@ -151,7 +151,7 @@
 
                                 @else
                                     <li class="nav-item">
-                                        <a id="contactLink" class="nav-link fs-5" href="{{ route('home') }}">Hello {{auth()->user()->first_name}}</a>
+                                        <a id="contactLink" class="nav-link fs-5" href="{{ url('dashboard/'.auth()->user()->id) }}">Hello {{auth()->user()->first_name}}</a>
                                     </li>
                                     
                                 @endif

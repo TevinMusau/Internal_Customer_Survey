@@ -67,6 +67,7 @@
                 <a class="nav-link" onclick="myFunction5()" href="#">Launch Survey</a>
                 <a class="nav-link" onclick="myFunction6()" href="#">Notifications</a>
                 <a class="nav-link" onclick="myFunction7()" href="#">View Survey Reports</a>
+                <a class="nav-link" onclick="myFunction8()" href="#">Comments</a>
             </nav>
         </div>
 
@@ -79,8 +80,65 @@
                     <i>All Users</i>
                 </h3>
 
-                <p class="text-center">Display Users Here</p>
+                <div class="text-end">
+                    <a class="" href="{{ route('new.user', ['id'=>auth()->user()->id]) }}">
+                        <button class="form-control w-25 btn btn-outline-primary mb-3"> + New User </button>
+                    </a>
+                </div>
 
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped table-borderless m-3">
+                        <tbody>
+                            <thead class="table-dark">
+                                <th class="text-center">First Name</th>
+                                <th class="text-center">Last Name</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Department</th>
+                                <th class="text-center">Role</th>
+                                <th class="text-center">Level</th>
+                                @if (auth()->user()->level == 'superAdmin' || auth()->user()->level == 'staffAdmin')
+                                    <th class="text-center" colspan="5">Action</th>
+                                @endif
+                            </thead>
+                            @foreach ($users as $user)
+                            <tr class="p-5">
+                                <td class="text-center">{{ $user->first_name }}</td>
+                                <td class="text-center">{{ $user->last_name }}</td>
+                                <td class="text-center">{{ $user->email }}</td>
+                                <td class="text-center">{{ $user->department }}</td>
+                                <td class="text-center">{{ $user->role }}</td>
+                                <td class="text-center">{{ $user->level }}</td>
+                                @if (auth()->user()->level == 'superAdmin' || auth()->user()->level == 'staffAdmin')
+                                    <td class="text-center">
+                                        @if ($user->level != 'superAdmin')
+                                            <a class="text-decoration-none" href="{{ route('edit.user', ['admin_id' => auth()->user()->id, 'user_id' => $user->id]) }}">
+                                                <button class="btn btn-outline-primary" title="Edit User">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </button>
+                                            </a>
+                                        @endif
+                                    </td>
+                                    @if (auth()->user()->id != $user->id)
+                                        @if($user->level != 'superAdmin')
+                                            <td class="text-center">
+                                                <span>
+                                                    <a class="text-decoration-none" 
+                                                        onclick="if (!window.confirm('This action is irreversible. Are you sure you want to proceed?')) return false" 
+                                                        href="{{ route('delete.user', ['admin_id' => auth()->user()->id, 'user_id' => $user->id]) }}">
+                                                        <button class="btn btn-outline-danger" title="Delete User">
+                                                            <i class="bi bi-trash3"></i>
+                                                        </button> 
+                                                    </a>
+                                                </span>
+                                            </td>
+                                        @endif
+                                    @endif
+                                @endif
+                            </tr>
+                        </tbody>
+                        @endforeach
+                    </table>
+                </div>
             </div>
 
             {{-- All Admins --}}
@@ -88,9 +146,60 @@
                 <h3 class="text-center fw-bold p-4" id="Title">
                     <i>All Admins</i>
                 </h3>
-
-                <p class="text-center">Display Admins Here</p>
-
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped table-borderless m-3">
+                        <tbody>
+                            <thead class="table-dark">
+                                <th class="text-center">First Name</th>
+                                <th class="text-center">Last Name</th>
+                                <th class="text-center">Email</th>
+                                <th class="text-center">Department</th>
+                                <th class="text-center">Role</th>
+                                <th class="text-center">Level</th>
+                                @if (auth()->user()->level == 'superAdmin' || auth()->user()->level == 'staffAdmin')
+                                <th class="text-center" colspan="5">Action</th>
+                                @endif
+                            </thead>
+                            @foreach ($admins as $admin)
+                            <tr>
+                                <td class="text-center">{{ $admin->first_name }}</td>
+                                <td class="text-center">{{ $admin->last_name }}</td>
+                                <td class="text-center">{{ $admin->email }}</td>
+                                <td class="text-center">{{ $admin->department }}</td>
+                                <td class="text-center">{{ $admin->role }}</td>
+                                <td class="text-center">{{ $admin->level }}</td>
+                                @if (auth()->user()->level == 'superAdmin' || auth()->user()->level == 'staffAdmin')
+                                    <td class="text-center">
+                                        @if ($admin->level != 'superAdmin')
+                                            <a class="text-decoration-none" href="{{ route('edit.user', ['admin_id' => auth()->user()->id, 'user_id' => $admin->id]) }}">
+                                                <button class="btn btn-outline-primary" title="Edit User">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </button>
+                                            </a>
+                                        @endif
+                                    </td>
+                                    @if (auth()->user()->id != $admin->id)
+                                        @if($admin->level != 'superAdmin')
+                                            <td class="text-center">
+                                                <a class="text-decoration-none" 
+                                                    onclick="if (!window.confirm('This action is irreversible. Are you sure you want to proceed?')) return false" 
+                                                    href="{{ route('delete.user', ['admin_id' => auth()->user()->id, 'user_id' => $admin->id]) }}">
+                                                    <button class="form-control btn btn-outline-danger mb-3" title="Delete User">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
+                                                </a>
+                                                {{-- <span>
+                                                    <button class="form-control w-25 btn btn-outline-danger mb-3">Delete</button>
+                                                </span> --}}
+                                            </td>
+                                        @endif
+                                    @endif
+                                @endif
+                            </tr>
+                        </tbody>
+                        @endforeach
+                    </table>
+                </div>
             </div>
 
 
@@ -176,6 +285,16 @@
                 <p class="text-center">Display Survey Reports Here</p>
 
             </div>
+
+            {{-- Comments --}}
+            <div id="comments" class="row" style="display: none">
+                <h3 class="text-center fw-bold p-4" id="Title">
+                    <i>Comments</i>
+                </h3>
+
+                <p class="text-center">Display Comments Here</p>
+
+            </div>
         </div>
     </div>
 </div>
@@ -200,6 +319,7 @@
         var launch_survey = document.getElementById("launch_survey");
         var notifications = document.getElementById("notifications");
         var survey_reports = document.getElementById("survey_reports");
+        var comments = document.getElementById("comments");
 
 
         users.style.display = 'block';
@@ -209,7 +329,8 @@
         launch_survey.style.display = 'none';
         notifications.style.display = 'none';
         survey_reports.style.display = 'none';
-        rejected.style.display = 'none';
+        comments.style.display = 'none';
+
     }
 
     function myFunction2(){
@@ -220,6 +341,7 @@
         var launch_survey = document.getElementById("launch_survey");
         var notifications = document.getElementById("notifications");
         var survey_reports = document.getElementById("survey_reports");
+        var comments = document.getElementById("comments");
 
         users.style.display = 'none';
         admins.style.display = 'block';
@@ -228,7 +350,7 @@
         launch_survey.style.display = 'none';
         notifications.style.display = 'none';
         survey_reports.style.display = 'none';
-        rejected.style.display = 'none';
+        comments.style.display = 'none';
     }
 
     function myFunction3(){
@@ -239,7 +361,7 @@
         var launch_survey = document.getElementById("launch_survey");
         var notifications = document.getElementById("notifications");
         var survey_reports = document.getElementById("survey_reports");
-
+        var comments = document.getElementById("comments");
 
         users.style.display = 'none';
         admins.style.display = 'none';
@@ -248,7 +370,7 @@
         launch_survey.style.display = 'none';
         notifications.style.display = 'none';
         survey_reports.style.display = 'none';
-        rejected.style.display = 'none';
+        comments.style.display = 'none';
     }
 
     function myFunction4(){
@@ -259,7 +381,7 @@
         var launch_survey = document.getElementById("launch_survey");
         var notifications = document.getElementById("notifications");
         var survey_reports = document.getElementById("survey_reports");
-
+        var comments = document.getElementById("comments");
 
         users.style.display = 'none';
         admins.style.display = 'none';
@@ -268,7 +390,7 @@
         launch_survey.style.display = 'none';
         notifications.style.display = 'none';
         survey_reports.style.display = 'none';
-        rejected.style.display = 'none';
+        comments.style.display = 'none';
     }
 
     function myFunction5(){
@@ -279,7 +401,7 @@
         var launch_survey = document.getElementById("launch_survey");
         var notifications = document.getElementById("notifications");
         var survey_reports = document.getElementById("survey_reports");
-
+        var comments = document.getElementById("comments");
 
         users.style.display = 'none';
         admins.style.display = 'none';
@@ -288,7 +410,7 @@
         launch_survey.style.display = 'block';
         notifications.style.display = 'none';
         survey_reports.style.display = 'none';
-        rejected.style.display = 'none';
+        comments.style.display = 'none';
     }
 
     function myFunction6(){
@@ -299,7 +421,7 @@
         var launch_survey = document.getElementById("launch_survey");
         var notifications = document.getElementById("notifications");
         var survey_reports = document.getElementById("survey_reports");
-
+        var comments = document.getElementById("comments");
 
         users.style.display = 'none';
         admins.style.display = 'none';
@@ -308,7 +430,7 @@
         launch_survey.style.display = 'none';
         notifications.style.display = 'block';
         survey_reports.style.display = 'none';
-        rejected.style.display = 'none';
+        comments.style.display = 'none';
     }
 
     function myFunction7(){
@@ -319,7 +441,7 @@
         var launch_survey = document.getElementById("launch_survey");
         var notifications = document.getElementById("notifications");
         var survey_reports = document.getElementById("survey_reports");
-
+        var comments = document.getElementById("comments");
 
         users.style.display = 'none';
         admins.style.display = 'none';
@@ -328,7 +450,27 @@
         launch_survey.style.display = 'none';
         notifications.style.display = 'none';
         survey_reports.style.display = 'block';
-        rejected.style.display = 'none';
+        comments.style.display = 'none';
+    }
+
+    function myFunction8(){
+        var users = document.getElementById("users");
+        var admins = document.getElementById("admins");
+        var surveys = document.getElementById("surveys");
+        var questions = document.getElementById("questions");
+        var launch_survey = document.getElementById("launch_survey");
+        var notifications = document.getElementById("notifications");
+        var survey_reports = document.getElementById("survey_reports");
+        var comments = document.getElementById("comments");
+
+        users.style.display = 'none';
+        admins.style.display = 'none';
+        surveys.style.display = 'none';
+        questions.style.display = 'none';
+        launch_survey.style.display = 'none';
+        notifications.style.display = 'none';
+        survey_reports.style.display = 'none';
+        comments.style.display = 'block';
     }
 
     // function myFunction7(){

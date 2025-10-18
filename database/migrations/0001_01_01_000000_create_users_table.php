@@ -22,7 +22,7 @@ return new class extends Migration
             $table->boolean('completed_staff_survey')->default(0);
             $table->boolean('completed_supervisor_survey')->default(0);
             $table->boolean('completed_managing_partner_survey')->default(0);
-            $table->string('level');
+            $table->string('level')->default('normalUser');
             $table->string('rating')->nullable();
             $table->rememberToken();
             $table->timestamps();
