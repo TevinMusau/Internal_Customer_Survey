@@ -126,7 +126,7 @@
     }
 
 </style>
-    <header>
+    <header class="col-12">
         <div class="mb-5">
             <div class="row" style="background-color: black">
                 <div class="col-4 mt-2 mb-3 text-center">

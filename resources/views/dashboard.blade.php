@@ -214,7 +214,7 @@
                         <div class="col-4">
                             <a class="text-decoration-none" href="#" id="survey">
                                 <div class="card" style="width: 11rem">
-                                    <img src="{{ asset('Logo/MMAN_Temp_Logo.png') }}" class="card-img-top" alt="Card_Img">
+                                    <img src="{{ asset('Logo/MMAN_Logo.png') }}" class="card-img-top" alt="Card_Img">
                                     <div class="card-body text-center">
                                         <p class="card-text text-wrap fw-bold fst-italic" style="color: #BC8F8F"> Staff<br/> Survey </p>
                                     </div>
@@ -222,9 +222,9 @@
                             </a>
                         </div>
                         <div class="col-4">
-                            <a class="text-decoration-none" href="#" id="survey">
+                            <a class="text-decoration-none" href="{{ route('mp.surveypage', ['user_id' => auth()->user()->id]) }}" id="survey">
                                 <div class="card" style="width: 10rem">
-                                    <img src="{{ asset('Logo/MMAN_Temp_Logo.png') }}" class="card-img-top" alt="Card_Img">
+                                    <img src="{{ asset('Logo/MMAN_Logo.png') }}" class="card-img-top" alt="Card_Img">
                                     <div class="card-body text-center">
                                         <p class="card-text text-wrap fw-bold fst-italic" style="color: #BC8F8F"> Managing Partner Survey </p>
                                     </div>
@@ -234,7 +234,7 @@
                         <div class="col-4">
                             <a class="text-decoration-none" href="#" id="survey">
                                 <div class="card" style="width: 11rem">
-                                    <img src="{{ asset('Logo/MMAN_Temp_Logo.png') }}" class="card-img-top" alt="Card_Img">
+                                    <img src="{{ asset('Logo/MMAN_Logo.png') }}" class="card-img-top" alt="Card_Img">
                                     <div class="card-body text-center">
                                         <p class="card-text text-wrap fw-bold fst-italic" style="color: #BC8F8F"> Supervisor<br/> Survey </p>
                                     </div>

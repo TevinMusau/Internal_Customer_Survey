@@ -29,9 +29,16 @@
                         We invite feedback as well. Feel free to tell us how your experience was!
                     </p>
                     <div class="">
-                        <a class="me-3" href="{{ route('login') }}">
-                            <button class="btn btn-outline-primary">Login Here</button>
-                        </a>
+                        @if (auth()->user())
+                            <a class="me-3" href="{{ route('dashboard', ['id' => auth()->user()->id]) }}">
+                                <button class="btn btn-outline-primary">To Dashboard</button>
+                            </a>
+                        
+                        @else
+                            <a class="me-3" href="{{ route('login') }}">
+                                <button class="btn btn-outline-primary">Login Here</button>
+                            </a> 
+                        @endif
                     </div>
                 </div>
             </div>
