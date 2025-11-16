@@ -123,4 +123,17 @@ class SurveysController extends Controller
 
         return view('surveys.base.surveyend', compact('part1', 'part2', 'part3'));
     }
+
+    function toStaffSurveyPage($id){
+
+        // if user is not logged in, redirect to the login page
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // get the user's id
+        $user = User::find($id);
+
+        return view('surveys.Staff_Survey.staffsurvey');
+    }
 }

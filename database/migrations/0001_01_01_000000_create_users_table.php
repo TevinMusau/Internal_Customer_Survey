@@ -14,16 +14,18 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('first_name');
+            $table->string('middle_name')->nullable();
             $table->string('last_name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('department');
+            // $table->string('department');
             $table->string('role');
-            $table->boolean('completed_staff_survey')->default(0);
-            $table->boolean('completed_supervisor_survey')->default(0);
-            $table->boolean('completed_managing_partner_survey')->default(0);
+            // $table->boolean('completed_staff_survey')->default(0);
+            // $table->boolean('completed_supervisor_survey')->default(0);
+            // $table->boolean('completed_managing_partner_survey')->default(0);
             $table->string('level')->default('normalUser');
-            $table->string('rating')->nullable();
+            $table->string('initials');
+            $table->boolean('isSupervisor')->default('0');
             $table->rememberToken();
             $table->timestamps();
         });

@@ -19,17 +19,14 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'first_name',
+        'middle_name',
         'last_name',
         'email',
         'password',
-        'department',
         'role',
-        'completed_staff_survey',
-        'completed_supervisor_survey',
-        'completed_managing_partner_survey',
         'level',
-        'rating',
-        'password',
+        'initials',
+        'isSupervisor',
     ];
 
     /**
@@ -53,5 +50,55 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Relationship to Department Table (One-To-One)
+    public function department(){
+        return $this->hasOne(Department::class, 'user_id');
+    }
+
+    // Relationship to Comments Table (One-To-Many)
+    public function comment_by(){
+        return $this->hasMany(Comment::class, 'comment_by');
+    }
+
+    // Relationship to Comments Table (One-To-Many)
+    public function comment_about(){
+        return $this->hasMany(Comment::class, 'comment_about');
+    }
+
+    // Relationship to Staff Survey Results Table (One-To-Many)
+    public function staff_survey_result(){
+        return $this->hasMany(Staff_Survey_Result::class);
+    }
+
+    // Relationship to Supervisor Survey Results Table (One-To-Many)
+    public function supervisor_survey_result(){
+        return $this->hasMany(Supervisor_Survey_Result::class);
+    }
+
+    // Relationship to Managing Partner Survey Results Table (One-To-Many)
+    public function managing_partner_survey_result(){
+        return $this->hasMany(Managing_Partner_Survey_Result::class);
+    }
+
+    // Relationship to Departments Completed Table (One-To-Many)
+    public function departments_completed(){
+        return $this->hasMany(Staff_Survey_Department_Completed::class);
+    }
+
+    // Relationship to Completed Staff Survey Table (One-To-One)
+    public function staff_survey_completed(){
+        return $this->hasOne(Completed_Staff_Survey::class);
+    }
+
+    // Relationship to Completed Staff Survey Table (One-To-One)
+    public function supervisor_survey_completed(){
+        return $this->hasOne(Completed_Supervisor_Survey::class);
+    }
+
+    // Relationship to Completed Staff Survey Table (One-To-One)
+    public function managing_partner_survey_completed(){
+        return $this->hasOne(Completed_Managing_Partner_Survey::class);
     }
 }

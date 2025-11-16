@@ -59,7 +59,7 @@
             <h1 class="fw-bold">Managing Parter Survey</h1>
         </div>
 
-        <div class="col-7 border border-black">
+        <div class="col-7">
             <div class="progress">
                 <div class="progress-bar bg-success" role="progressbar" style="width: 33.33%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">
                     <span class="fs-6">Punctuality</span>
@@ -73,7 +73,7 @@
             </div>
         </div>
 
-        <div class="col-7 border border-dark">
+        <div class="col-7">
             <div class="h6">
                 <p>
                     <ol>

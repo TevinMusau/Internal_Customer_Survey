@@ -212,7 +212,7 @@
                 <div class="container-fluid w-75">
                     <div class="row justify-content-center">
                         <div class="col-4">
-                            <a class="text-decoration-none" href="#" id="survey">
+                            <a class="text-decoration-none" href="{{ route('staff.surveypage', ['user_id' => auth()->user()->id]) }}" id="survey">
                                 <div class="card" style="width: 11rem">
                                     <img src="{{ asset('Logo/MMAN_Logo.png') }}" class="card-img-top" alt="Card_Img">
                                     <div class="card-body text-center">

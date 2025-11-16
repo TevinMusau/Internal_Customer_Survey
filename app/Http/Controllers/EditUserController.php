@@ -27,7 +27,7 @@ class EditUserController extends Controller
 
         // find the user's details based on the user's ID
         $user = User::find($user_id);
-        dd($user);
+        // dd($user);
 
         // set the new credentials that the user has entered
         $user->first_name = $request->input('fname');

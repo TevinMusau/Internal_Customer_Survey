@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title') Intro to Managing Partner Survey @endsection
+@section('title') Survey Introduction @endsection
 
 @section('content')
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <h4 class="text-center fw-bold"> MANAGING PARTNER SURVEY  </h4>
-            <h5 class="text-center mt-4 pb-2 fw-bold"> Ratings Explained </h5>
+            {{-- <h4 class="text-center fw-bold"> MANAGING PARTNER SURVEY  </h4> --}}
+            <h4 class="text-center pb-2 fw-bold"> Ratings Explained </h4>
 
             <p>                
                 <ul>
@@ -43,7 +43,7 @@
 
             @elseif (str_contains(url()->current(), 'staff'))
                 <a class="text-decoration-none" href="#">
-                    <button class="btn btn-outline-info p-2 mt-1 text-center">Let's Get Started!</button>
+                    <button class="btn btn-outline-info p-2 mt-1 text-center">Select a Department!</button>
                 </a>
 
             @elseif ((str_contains(url()->current(), 'supervisor')))
