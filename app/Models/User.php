@@ -23,6 +23,7 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
+        'department_id',
         'role',
         'level',
         'initials',
@@ -54,7 +55,7 @@ class User extends Authenticatable
 
     // Relationship to Department Table (One-To-One)
     public function department(){
-        return $this->hasOne(Department::class, 'user_id');
+        return $this->belongsTo(Department::class);
     }
 
     // Relationship to Comments Table (One-To-Many)

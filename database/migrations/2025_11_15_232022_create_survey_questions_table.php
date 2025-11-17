@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('survey_questions', function (Blueprint $table) {
             $table->id();
-            $table->string('sub_category_name');
-            $table->foreignId('department_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->string('sub_category_name')->unique();
+            // $table->foreignId('department_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->longText('sub_category_description');
             $table->foreignId('question_category_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->longText('question');

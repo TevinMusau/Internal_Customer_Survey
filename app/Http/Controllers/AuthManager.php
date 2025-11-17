@@ -11,7 +11,7 @@ class AuthManager extends Controller
 {
     // to login page
     function login(){
-        return view('/auth/login');
+        return view('auth.login');
     }
 
     // receives a request that contains all the data from the login form
@@ -47,8 +47,11 @@ class AuthManager extends Controller
                 return redirect()->intended(route('dashboard/'.auth()->user()->id))->with('success', 'Login Successful!');
             }            
         } else {
+
             // if not successful, redirect to the login page with an error message
-            return redirect(route('login'))->with('error', 'Login Details Incorrect! Please Try Again');
+            return back()->withInput()->with('error', 'Login Details Incorrect! Please Try Again');
+            
+            //return redirect(route('login'))->with('error', 'Login Details Incorrect! Please Try Again');
         }
     }
 

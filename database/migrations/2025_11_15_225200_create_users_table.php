@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('email')->unique();
             $table->string('password');
-            // $table->string('department');
+            $table->foreignId('department_id')->nullable()->constrained()->onDelete('set null')->onUpdate('cascade');
             $table->string('role');
             // $table->boolean('completed_staff_survey')->default(0);
             // $table->boolean('completed_supervisor_survey')->default(0);

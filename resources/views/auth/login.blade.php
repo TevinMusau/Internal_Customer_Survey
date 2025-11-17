@@ -57,7 +57,7 @@
             <!-- csrf is a security feature for laravel forms -->
             @csrf
             <div class="col-12 text-center m-2 p-3">
-                <input class="form-control" type="text" name="email" placeholder="Enter Email Address" style="width: 500px">
+                <input class="form-control" type="text" name="email" placeholder="Enter Email Address" value="{{ old('email') }}" style="width: 500px">
             </div>
             <div class="col-12 text-center m-2 p-3">
                 <input class="form-control" type="password" name="password" placeholder="Enter Password" style="width: 500px">

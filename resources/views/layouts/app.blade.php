@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+
+    {{-- AJAX --}}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     
     <!-- Connecting bootstrap -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])

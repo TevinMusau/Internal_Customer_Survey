@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Department;
 use Illuminate\Support\Facades\Hash;
 
 
@@ -19,8 +20,11 @@ class EditUserController extends Controller
         // find the user's details based on the user's ID
         $user = User::find($user_id);
 
+        // get all departments names (a collection of just the names)
+        $departments = Department::all();
+
         // redirect to the edit details page
-        return view('admin.edituser', compact('user'));
+        return view('admin.edituser', compact('user', 'departments'));
     }
 
     function editDetails(Request $request, $admin_id, $user_id){
@@ -31,10 +35,17 @@ class EditUserController extends Controller
 
         // set the new credentials that the user has entered
         $user->first_name = $request->input('fname');
+        $user->middle_name = $request->input('mname');
         $user->last_name = $request->input('lname');
+        $user->initials = $request->input('initials');
         $user->email = $request->input('email');
-        $user->department = $request->input('department');
+        $user->department_id = $request->input('department_selection');
         $user->role = $request->input('role');
+        if($request->input('supervisor')){
+            $user->isSupervisor = 1;
+        } else {
+            $user->isSupervisor = 0;
+        }
         $user->level = $request->input('user_level');
 
         // check if the password fields are empty

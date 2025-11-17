@@ -74,7 +74,7 @@
         {{-- Content --}}
         <div class="col-9">
 
-            {{-- All Users --}}
+{{-- --------------------------------------- USERS SECTION ----------------------------------------- --}}
             <div id="users" class="row">
                 <h3 class="text-center fw-bold p-4" id="Title">
                     <i>All Users</i>
@@ -91,11 +91,14 @@
                         <tbody>
                             <thead class="table-dark">
                                 <th class="text-center">First Name</th>
+                                <th class="text-center">Middle Name</th>
                                 <th class="text-center">Last Name</th>
+                                <th class="text-center">Initials</th>
                                 <th class="text-center">Email</th>
                                 <th class="text-center">Department</th>
                                 <th class="text-center">Role</th>
                                 <th class="text-center">Level</th>
+                                <th class="text-center">Supervisor?</th>
                                 @if (auth()->user()->level == 'superAdmin' || auth()->user()->level == 'staffAdmin')
                                     <th class="text-center" colspan="5">Action</th>
                                 @endif
@@ -103,11 +106,22 @@
                             @foreach ($users as $user)
                             <tr class="p-5">
                                 <td class="text-center">{{ $user->first_name }}</td>
+                                @if ($user->middle_name)
+                                    <td class="text-center">{{ $user->middle_name }}</td>
+                                @else
+                                    <td class="text-center fst-italic">N/A</td>
+                                @endif
                                 <td class="text-center">{{ $user->last_name }}</td>
+                                <td class="text-center">{{ $user->initials }}</td>
                                 <td class="text-center">{{ $user->email }}</td>
-                                <td class="text-center">{{ $user->department }}</td>
+                                <td class="text-center">{{ optional($user->department)->name ?? 'None' }}</td>
                                 <td class="text-center">{{ $user->role }}</td>
                                 <td class="text-center">{{ $user->level }}</td>
+                                @if ($user->isSupervisor)
+                                    <td class="text-center">Yes</td>
+                                @else
+                                    <td class="text-center">No</td>
+                                @endif
                                 @if (auth()->user()->level == 'superAdmin' || auth()->user()->level == 'staffAdmin')
                                     <td class="text-center">
                                         @if ($user->level != 'superAdmin')
@@ -141,7 +155,7 @@
                 </div>
             </div>
 
-            {{-- All Admins --}}
+{{-- --------------------------------------- ADMINS SECTION ----------------------------------------- --}}
             <div id="admins" class="row" style="display: none">
                 <h3 class="text-center fw-bold p-4" id="Title">
                     <i>All Admins</i>
@@ -202,8 +216,7 @@
                 </div>
             </div>
 
-
-            {{-- Surveys --}}
+{{-- --------------------------------------- SURVEYS SECTION ----------------------------------------- --}}
             <div id="surveys" class="row" style="display: none">
                 <h3 class="text-center fw-bold p-4" id="Title">
                     <i>Surveys</i>
@@ -222,7 +235,7 @@
                             </a>
                         </div>
                         <div class="col-4">
-                            <a class="text-decoration-none" href="{{ route('mp.surveypage', ['user_id' => auth()->user()->id]) }}" id="survey">
+                            <a class="text-decoration-none" href="{{ route('mp.survey.about', ['user_id' => auth()->user()->id]) }}" id="survey">
                                 <div class="card" style="width: 10rem">
                                     <img src="{{ asset('Logo/MMAN_Logo.png') }}" class="card-img-top" alt="Card_Img">
                                     <div class="card-body text-center">
@@ -246,17 +259,100 @@
                 </div>
             </div>
 
-            {{-- Survey Questions --}}
+{{-- --------------------------------------- QUESTIONS SECTION ----------------------------------------- --}}
             <div id="questions" class="row" style="display: none">
                 <h3 class="text-center fw-bold p-4" id="Title">
                     <i>Survey Questions</i>
                 </h3>
 
-                <p class="text-center">Display Survey Questions Here</p>
+                <div class="d-flex">
+                    <div class="col-5 text-center flex-fill border border-black">
+                        <button id="existing_category_btn" class="btn btn-primary" onclick="existing_category_function()">Select an Existing Category</button>
+                    </div>
+                    <div class="col-4 text-end">
+                        <button id="new_category_btn" class="btn btn-primary" onclick="new_category_function()">+ Make New Category</button>
+                    </div>
+                </div>
+
+                <div class="p-1" id="new_category" style="display: none">
+                    <div class="col-12 border border-warning text-center">
+
+                        <input type="text" placeholder="Insert Category Name">
+
+                        <p>This Category will be seen by which department(s)</p>
+
+                        <div class="form-check">
+                            <input type="checkbox" name="all" id="all">
+                            <label for="all">All Departments</label> <br>
+
+                            <input type="checkbox" class="other-item" name="dept_1" id="dept_1">
+                            <label for="dept_1">Department 1</label> <br>
+
+                            <input type="checkbox" class="other-item" name="dept_2" id="dept_2">
+                            <label for="dept_2">Department 2</label> <br>
+                        </div>
+
+                        <div class="fw-bold">
+                            <button class="btn btn-outline-success">Save!</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-1" id="existing_category" style="display: none">
+                    <div class="col-12 border border-warning text-center">
+                        <p>Select a Category: </p>
+                        <div class="form-check">
+                            <input type="radio" name="all" id="all">
+                            <label for="all">Category_1</label> <br>
+
+                            <input type="radio" class="other-item" name="dept_1" id="dept_1">
+                            <label for="dept_1">Category_2</label> <br>
+
+                            <input type="radio" class="other-item" name="dept_2" id="dept_2">
+                            <label for="dept_2">Category_3</label> <br>
+                        </div>
+                        <br>
+                        <p>For which department: </p>
+
+                        <div class="form-check">
+                            <input type="checkbox" name="all" id="all">
+                            <label for="all">All Departments</label> <br>
+
+                            <input type="checkbox" class="other-item" name="dept_1" id="dept_1">
+                            <label for="dept_1">Department 1</label> <br>
+
+                            <input type="checkbox" class="other-item" name="dept_2" id="dept_2">
+                            <label for="dept_2">Department 2</label> <br>
+                        </div>
+
+                        <input type="text" placeholder="Insert Sub-Category Name">
+
+                        <input type="text" placeholder="Insert Sub-Category Description">
+
+                        <input type="text" placeholder="Write the Question">
+
+                        <br>
+                        <p>Which Rating System to be used? </p>
+
+                        <div class="form-check">
+                            <input type="checkbox" name="rating_1" id="rating_1">
+                            <label for="all">Rating_1</label> <br>
+
+                            <input type="checkbox" class="other-item" name="rating_2" id="rating_2">
+                            <label for="rating_2">Rating 2</label> <br>
+
+                            <input type="checkbox" class="other-item" name="rating_3" id="rating_3">
+                            <label for="rating_3">Rating 3</label> <br>
+                        </div>
+
+                        <div class="fw-bold">
+                            <button class="btn btn-outline-success">Save!</button>
+                        </div>
+                    </div>
+                </div>
 
             </div>
 
-            {{-- Launch Survey --}}
+{{-- --------------------------------------- LAUNCH SURVEY SECTION ----------------------------------------- --}}
             <div id="launch_survey" class="row" style="display: none">
                 <h3 class="text-center fw-bold p-4" id="Title">
                     <i>Launch Survey</i>
@@ -266,7 +362,7 @@
 
             </div>
 
-            {{-- Notifications --}}
+{{-- --------------------------------------- NOTIFICATIONS SECTION ----------------------------------------- --}}
             <div id="notifications" class="row" style="display: none">
                 <h3 class="text-center fw-bold p-4" id="Title">
                     <i>Notifications</i>
@@ -276,7 +372,7 @@
 
             </div>
 
-            {{-- Survey Reports --}}
+{{-- --------------------------------------- SURVEY REPORTS SECTION ----------------------------------------- --}}
             <div id="survey_reports" class="row" style="display: none">
                 <h3 class="text-center fw-bold p-4" id="Title">
                     <i>Survey Reports</i>
@@ -286,7 +382,7 @@
 
             </div>
 
-            {{-- Comments --}}
+{{-- --------------------------------------- COMMENTS SECTION ----------------------------------------- --}}
             <div id="comments" class="row" style="display: none">
                 <h3 class="text-center fw-bold p-4" id="Title">
                     <i>Comments</i>
@@ -300,6 +396,61 @@
 </div>
 
 <script>
+
+    var new_category_btn = document.getElementById("new_category");
+
+    function existing_category_function(){
+        var existing_category = document.getElementById("existing_category");
+        var new_category = document.getElementById("new_category");
+        
+        existing_category.style.display = 'block';
+        new_category.style.display = 'none';
+    }
+
+    function new_category_function(){
+        var existing_category = document.getElementById("existing_category");
+        var new_category = document.getElementById("new_category");
+        
+        existing_category.style.display = 'none';
+        new_category.style.display = 'block';
+    }
+
+
+    // for the selection of departments
+    document.addEventListener('DOMContentLoaded', function () {
+        const all_deparments_selection = document.getElementById('all');
+        const others = document.querySelectorAll('.other-item');
+
+        function updateState() {
+            const anyOtherChecked = Array.from(others).some(cb => cb.checked);
+
+            if (all_deparments_selection.checked) {
+                // Item 1 is checked → disable others
+                others.forEach(cb => {
+                    cb.disabled = true;
+                    cb.checked = false; // optional: force uncheck
+                });
+            } else if (anyOtherChecked) {
+                // One of Item 2/3 is checked → disable Item 1
+                all_deparments_selection.disabled = true;
+            } else {
+                // None checked → enable all
+                all_deparments_selection.disabled = false;
+                others.forEach(cb => {
+                    cb.disabled = false;
+                });
+            }
+        }
+
+        // Attach listeners
+        all_deparments_selection.addEventListener('change', updateState);
+        others.forEach(cb => cb.addEventListener('change', updateState));
+    });
+
+
+
+
+
     // This segment allows us to switch from one tab to another
     const navLinkEls = document.querySelectorAll('.nav-link');
 

@@ -17,6 +17,6 @@ class Question_Category extends Model
     }
 
     public function department(){
-        return $this->belongsTo(Department::class);
+        return $this->belongsToMany(Department_Question_Category::class, 'department_question_category');
     }
 }

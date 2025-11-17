@@ -15,7 +15,7 @@ class NewUserController extends Controller
             'fname' => 'required|min:3|max:50',
             'lname' => 'required|min:3|max:50',
             'email' => 'required|email',
-            'department' => 'required',
+            'department_selection' => 'required',
             'role' => 'required',
             'password' => ['required', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/','regex:/[@$!%*#?&]/', 'confirmed']
         ]);
@@ -23,11 +23,46 @@ class NewUserController extends Controller
         // get data from the request variable and store it in an array 
         // e.g. gets the fname from the request variable and stores in the data array
         $data['first_name'] = $request->fname;
+
+        // check if middle name has been input
+        if ($request->mname != null){
+
+            // save the middle name
+            $data['middle_name'] = $request->mname;
+
+            // if the middle name is used in the initials
+            if ($request->boolean('mname_initial')){
+                // extract the first letter of the fname, mname and lname
+                $initials_with_middle_name = strtoupper(substr($request->fname, 0, 1) . substr($request->mname, 0, 1) . substr($request->lname, 0, 1));
+
+                // save the initials
+                $data['initials'] = $initials_with_middle_name;
+
+            } else {
+                // extract the first letter of the fname and lname
+                $initials = strtoupper(substr($request->fname, 0, 1) . substr($request->lname, 0, 1));
+
+                // save the initials
+                $data['initials'] = $initials;
+            }
+        } else {
+            // extract the first letter of the fname and lname
+            $initials = strtoupper(substr($request->fname, 0, 1) . substr($request->lname, 0, 1));
+
+            // save the initials
+            $data['initials'] = $initials;
+        }
         $data['last_name'] = $request->lname;
         $data['email'] = $request->email;
         $data['password'] = $request->password;
-        $data['department'] = $request->department;
+
+        $data['department_id'] = $request->department_selection;
+
         $data['role'] = $request->role;
+
+        if ($request->boolean('supervisor')) {
+            $data['isSupervisor'] = 1;
+        }
 
         // check the role assigned by the admin when creating the user
         $selectedLevel = $request->user_level;
@@ -63,7 +98,8 @@ class NewUserController extends Controller
             // create a log of the action done
             Log::error('Unable to create new user. Attempt done by '.auth()->user()->level.' '. auth()->user()->first_name.' of user ID'.auth()->user()->id);
 
-            return redirect(url('dashboard/'.auth()->user()->id.'/newuser'))->with('error', 'Registration failed, try again!');
+            return back()->withInput()->with('error', 'Registration failed, try again!');
+
         }
 
         // create a log of the action done

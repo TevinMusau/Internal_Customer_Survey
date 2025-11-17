@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Department;
 
 class DashboardController extends Controller
 {
@@ -35,7 +36,10 @@ class DashboardController extends Controller
         // get the currently logged in user's ID
         $current_user = User::find($id);
 
-        return view('admin.newuser');
+        // get all departments names (a collection of just the names)
+        $departments = Department::all();
+
+        return view('admin.newuser', compact('departments'));
     }
 
     function deleteUser($admin_id, $user_id)

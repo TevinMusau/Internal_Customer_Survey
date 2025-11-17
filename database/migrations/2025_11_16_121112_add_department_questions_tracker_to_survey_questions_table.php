@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('departments', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-            $table->timestamps();
+        Schema::table('survey_questions', function (Blueprint $table) {
+            $table->boolean('affects_all_department')->default(0); // 0 - Does not affect all departments; 1 - Affects All Department
         });
     }
 
@@ -23,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('departments');
+        Schema::table('survey_questions', function (Blueprint $table) {
+            //
+        });
     }
 };

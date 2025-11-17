@@ -13,6 +13,7 @@ class Survey_Question extends Model
         'question_category_id',
         'question',
         'rating_id',
+        'appears_in',
     ];
 
     // Relationship to Staff Survey Result Table (One-To-Many)
@@ -31,7 +32,7 @@ class Survey_Question extends Model
     }
 
     public function department(){
-        return $this->belongsTo(Department::class);
+        return $this->belongsToMany(Department::class, 'department_survey_question');
     }
 
     public function question_category(){

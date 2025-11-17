@@ -9,7 +9,7 @@ class SurveysController extends Controller
 {
     private $rating;
     // to Managing Partner Survey Page
-    function toManagingPartnerSurveyPage($id){
+    function introToManagingPartnerSurvey($id){
 
         // if user is not logged in, redirect to the login page
         if(!auth()->user()){
@@ -22,7 +22,7 @@ class SurveysController extends Controller
         return view('surveys.Managing_Partner.managingpartnersurvey');
     }
 
-    function surveyStart($id){
+    function ratingsExplained($id){
 
         // if user is not logged in, redirect to the login page
         if(!auth()->user()){
@@ -32,7 +32,7 @@ class SurveysController extends Controller
         // get the user's id
         $user = User::find($id);
 
-        return view('surveys.base.intro');
+        return view('surveys.base.ratings_explained');
     }
 
     function managingPartnerSurvey($id){
@@ -135,5 +135,17 @@ class SurveysController extends Controller
         $user = User::find($id);
 
         return view('surveys.Staff_Survey.staffsurvey');
+    }
+
+    function beginTest($id) {
+        // if user is not logged in, redirect to the login page
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // get the user's id
+        $user = User::find($id);
+
+        return view('surveys.Staff_Survey.test');
     }
 }

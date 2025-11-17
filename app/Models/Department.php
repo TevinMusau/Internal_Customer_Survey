@@ -8,23 +8,23 @@ class Department extends Model
 {
     protected $fillable = [
         'name',
-        'user_id'
     ];
 
     // Relationship to User Table (One-To-One)
     public function user(){
-        return $this->belongsTo(User::class);
+        return $this->hasOne(User::class);
     }
 
-    // Relationship to Survey Questions Table (One-To-Many)
+    // Relationship to Survey Questions Table (Many-To-Many)
     public function survey_question(){
-        return $this->hasMany(Survey_Question::class);
+        return $this->belongsToMany(Survey_Question::class, 'department_survey_question');
     }
 
     // Relationship to Question Category Table (One-To-Many)
     public function question_category() {
-        return $this->hasMany(Question_Category::class, 'department_id');
+        return $this->belongsToMany(Department_Question_Category::class, 'department_question_category');
     }
+
 
     // Relationship to Departments Completed Table (One-To-One)
     public function departments_completed(){

@@ -41,17 +41,53 @@
                 <div class="col-12 text-center p-3">
                     <input class="form-control" type="text" name='fname' value="{{ $user->first_name }}" placeholder="Enter First Name">
                 </div>
+                @if ($user->middle_name)
+                    <div class="col-12 text-center p-3">
+                        <input class="form-control" type="text" name='mname' value="{{ $user->middle_name }}" placeholder="Enter Middle Name">
+                    </div>
+                @else
+                    <div class="col-12 text-center p-3">
+                        <input class="form-control" type="text" name='mname' value="N/A" placeholder="Enter Middle Name">
+                    </div>
+                @endif
+                
                 <div class="col-12 text-center p-3">
                     <input class="form-control" type="text" name='lname' value="{{ $user->last_name }}" placeholder="Enter Last Name">
                 </div>
                 <div class="col-12 text-center p-3">
-                    <input class="form-control" type="email" name='email' value="{{ $user->email }}" placeholder="Enter Email Address">
+                    <input class="form-control" type="text" name='initials' value="{{ $user->initials }}" placeholder="Enter Initials">
                 </div>
                 <div class="col-12 text-center p-3">
-                    <input class="form-control" type="text" name='department' value="{{ $user->department }}" placeholder="Enter Department">
+                    <input class="form-control" type="email" name='email' value="{{ $user->email }}" placeholder="Enter Email Address">
+                </div>
+
+                <div class="col-12 p-3 border border-bottom border-top" style="background-color: #F0FFFF">
+                    <h6> <strong> Edit the User's Department: </strong> </h6>
+
+                    @foreach ($departments as $department)
+                    <div class="form-check">
+                        <div class="d-flex justify-content-evenly">
+                            <input class="btn-check" type="radio" name="department_selection" value="{{ $department->id }}" id="department_selection_{{ $department->id }}" autocomplete="off" {{ $department->id == $user->department_id ? 'checked' : ''}} >
+                            <label class="btn btn-outline-info" for="department_selection_{{ $department->id }}"> {{ $department->name }} </label>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+
+                <div class="col-12 text-center p-3">
+                    <input class="form-control" type="text" name='department' value="{{ $user->department->name }}" placeholder="Enter Department">
                 </div>
                 <div class="col-12 text-center p-3">
                     <input class="form-control" type="text" name='role' value="{{ $user->role }}" placeholder="Enter Role">
+                </div>
+                <div class="form-check form-switch ms-3 mt-3 mb-4">
+                    @if ($user->isSupervisor)
+                        <input class="form-check-input" type="checkbox" name="supervisor" role="switch" id="supervisor" checked>
+                    @else
+                        <input class="form-check-input" type="checkbox" name="supervisor" role="switch" id="supervisor">
+
+                    @endif
+                    <label class="form-check-label" for="supervisor">Is this user a supervisor?</label>
                 </div>
                 
                 <h5 class="text-center fw-bolder mt-2"> Select the User's level 
@@ -67,7 +103,7 @@
                 <div class="d-flex flex-row mb-5 text-center">
                     @if (auth()->user()->level == 'superAdmin')
                         <div class="btn-group-toggle" data-toggle="buttons">
-                            <input type="radio" name="super_admin" id="super_admin" value="superAdmin" {{ $user->level == 'superAdmin' ? 'checked' : '' }}>
+                            <input type="radio" name="user_level" id="super_admin" value="superAdmin" {{ $user->level == 'superAdmin' ? 'checked' : '' }}>
                             <label class="btn btn-info" for="super_admin">Super Admin</label>
                         </div>
                     @else

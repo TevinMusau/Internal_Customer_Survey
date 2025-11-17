@@ -35,8 +35,10 @@ Route::post('/dashboard/{admin_id}/{user_id}/edit-user', [EditUserController::cl
 
 // -------------------------- Surveys ----------------------
 // Managing Partner Survey
-Route::get('/dashboard/{user_id}/surveys/managing-partner-survey', [SurveysController::class, 'toManagingPartnerSurveyPage'])->name('mp.surveypage');
-Route::get('/dashboard/{user_id}/surveys/managing-partner-survey/intro', [SurveysController::class, 'surveyStart'])->name('mp.survey.intro');
+Route::get('/dashboard/{user_id}/surveys/managing-partner-survey', [SurveysController::class, 'introToManagingPartnerSurvey'])->name('mp.survey.about');
+
+Route::get('/dashboard/{user_id}/surveys/managing-partner-survey/ratings_explained', [SurveysController::class, 'ratingsExplained'])->name('mp.survey.intro');
+
 Route::get('/dashboard/{user_id}/surveys/managing-partner-survey/survey/p1', [SurveysController::class, 'managingPartnerSurvey'])->name('mp.survey.p1');
 Route::post('/dashboard/{user_id}/surveys/managing-partner-survey/survey/p1', [SurveysController::class, 'managingPartnerSurveyStep1'])->name('mp.survey.p1.post');
 
@@ -51,5 +53,7 @@ Route::post('/dashboard/{user_id}/surveys/managing-partner-survey/survey/p3', [S
 
 // Staff Survey
 Route::get('/dashboard/{user_id}/surveys/staff-survey', [SurveysController::class, 'toStaffSurveyPage'])->name('staff.surveypage');
-Route::get('/dashboard/{user_id}/surveys/staff-survey/intro', [SurveysController::class, 'surveyStart'])->name('staff.survey.intro');
+Route::get('/dashboard/{user_id}/surveys/staff-survey/intro', [SurveysController::class, 'ratingsExplained'])->name('staff.survey.intro');
+
+Route::get('/dashboard/{user_id}/surveys/staff-survey/test', [SurveysController::class, 'beginTest'])->name('staff.survey');
 
