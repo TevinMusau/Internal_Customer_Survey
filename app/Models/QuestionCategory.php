@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Question_Category extends Model
+class QuestionCategory extends Model
 {
+    protected $table = 'question_categories';
+
     protected $fillable = [
         'category_name',
-        'department_id',
+        'appears_in_all_departments',
     ];
 
     // Relationship to Survey Question Table (One-To-Many)
@@ -17,6 +19,6 @@ class Question_Category extends Model
     }
 
     public function department(){
-        return $this->belongsToMany(Department_Question_Category::class, 'department_question_category');
+        return $this->belongsToMany(Department::class, 'department_question_category', 'department_id');
     }
 }

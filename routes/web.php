@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\QuestionCategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthManager;
 use App\Http\Controllers\NewUserController;
@@ -49,7 +50,7 @@ Route::get('/dashboard/{user_id}/surveys/managing-partner-survey/survey/p2', [Su
 Route::post('/dashboard/{user_id}/surveys/managing-partner-survey/survey/p2', [SurveysController::class, 'managingPartnerSurveyStep2'])->name('mp.survey.p2.post');
 
 Route::get('/dashboard/{user_id}/surveys/managing-partner-survey/survey/p3', [SurveysController::class, 'managingPartnerSurveyStep3'])->name('mp.survey.p3');
-Route::post('/dashboard/{user_id}/surveys/managing-partner-survey/survey/p3', [SurveysController::class, 'managingPartnerSurveyStep3'])->name('mp.survey.p3.post');
+Route::post( '/dashboard/{user_id}/surveys/managing-partner-survey/survey/p3', [SurveysController::class, 'managingPartnerSurveyStep3'])->name('mp.survey.p3.post');
 
 // Staff Survey
 Route::get('/dashboard/{user_id}/surveys/staff-survey', [SurveysController::class, 'toStaffSurveyPage'])->name('staff.surveypage');
@@ -57,3 +58,4 @@ Route::get('/dashboard/{user_id}/surveys/staff-survey/intro', [SurveysController
 
 Route::get('/dashboard/{user_id}/surveys/staff-survey/test', [SurveysController::class, 'beginTest'])->name('staff.survey');
 
+Route::post('/dashboard/{user_id}/q_category/create', [QuestionCategoryController::class, 'store'])->name('create.category');

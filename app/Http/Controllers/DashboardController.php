@@ -21,10 +21,13 @@ class DashboardController extends Controller
         // get all users
         $users = User::all();
 
+        // get all departments
+        $departments = Department::all();
+
         // get all admins
         $admins = User::where('level', '!=', 'normalUser')->get();
 
-        return view('dashboard', compact('users', 'admins'));
+        return view('dashboard', compact('users', 'admins', 'departments'));
     }
 
     function newUserPage($id) {

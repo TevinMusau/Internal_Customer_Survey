@@ -22,7 +22,7 @@ class Department extends Model
 
     // Relationship to Question Category Table (One-To-Many)
     public function question_category() {
-        return $this->belongsToMany(Department_Question_Category::class, 'department_question_category');
+        return $this->belongsToMany(QuestionCategory::class, 'department_question_category', 'question_category_id');
     }
 
 

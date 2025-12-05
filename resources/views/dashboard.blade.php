@@ -276,25 +276,26 @@
 
                 <div class="p-1" id="new_category" style="display: none">
                     <div class="col-12 border border-warning text-center">
+                        <form class="form-group" action="{{ route('create.category', ['user_id' => auth()->user()->id]) }}" method="POST">
+                            @csrf
+                            <input class="form-control w-50" type="text" name="category_name" placeholder="Enter Category Name" value="{{ old('category_name') }}">
 
-                        <input type="text" placeholder="Insert Category Name">
+                            <p>This Category will be seen by which department(s)?</p>
 
-                        <p>This Category will be seen by which department(s)</p>
+                            <div class="form-check">
+                                <input class="all" type="checkbox" name="dept_selection[]" id="dept_selection" value="all_depts">
+                                <label for="dept_selection">All Departments</label> <br>
 
-                        <div class="form-check">
-                            <input type="checkbox" name="all" id="all">
-                            <label for="all">All Departments</label> <br>
-
-                            <input type="checkbox" class="other-item" name="dept_1" id="dept_1">
-                            <label for="dept_1">Department 1</label> <br>
-
-                            <input type="checkbox" class="other-item" name="dept_2" id="dept_2">
-                            <label for="dept_2">Department 2</label> <br>
-                        </div>
-
-                        <div class="fw-bold">
-                            <button class="btn btn-outline-success">Save!</button>
-                        </div>
+                                @foreach ($departments as $department)
+                                    <input type="checkbox" class="other-item" name="dept_selection[]" id="dept_selection_{{ $department->id }}" value="{{ $department->id }}">
+                                    <label for="dept_selection_{{ $department->id }}">{{ $department->name }}</label> <br>
+                                @endforeach
+                            </div>
+                            
+                            <div class="fw-bold">
+                                <button class="btn btn-outline-success">Save!</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
                 <div class="p-1" id="existing_category" style="display: none">
@@ -418,7 +419,7 @@
 
     // for the selection of departments
     document.addEventListener('DOMContentLoaded', function () {
-        const all_deparments_selection = document.getElementById('all');
+        const all_deparments_selection = document.querySelector('.all');
         const others = document.querySelectorAll('.other-item');
 
         function updateState() {
