@@ -14,6 +14,6 @@ class Rating extends Model
 
     // Relationship to Survey Questions Table (One-To-Many)
     public function survey_question(){
-        return $this->hasMany(Survey_Question::class);
+        return $this->hasMany(SurveyQuestion::class);
     }
 }

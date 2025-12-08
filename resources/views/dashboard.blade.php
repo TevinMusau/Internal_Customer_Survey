@@ -300,54 +300,54 @@
                 </div>
                 <div class="p-1" id="existing_category" style="display: none">
                     <div class="col-12 border border-warning text-center">
-                        <p>Select a Category: </p>
-                        <div class="form-check">
-                            <input type="radio" name="all" id="all">
-                            <label for="all">Category_1</label> <br>
+                        <form action="{{ route('create.question',['user_id' => auth()->user()->id]) }}" method="POST">
+                            @csrf
+                            <p>Select a Category: </p>
+                            
+                            <div class="form-check">
+                                @foreach ($question_categories as $category)
+                                    <input type="radio" name="question_category" id="question_category" value="{{ $category->id }}">
+                                    <label for="question_category">{{ $category->category_name }}</label> <br>
+                                @endforeach
+                            </div>
+                            <br>
 
-                            <input type="radio" class="other-item" name="dept_1" id="dept_1">
-                            <label for="dept_1">Category_2</label> <br>
+                            <p>For which department: </p>
 
-                            <input type="radio" class="other-item" name="dept_2" id="dept_2">
-                            <label for="dept_2">Category_3</label> <br>
-                        </div>
-                        <br>
-                        <p>For which department: </p>
+                            <input class="all_depts" type="checkbox" name="question_dept_selection[]" id="question_dept_selection" value="all_depts">
+                            <label for="question_dept_selection">All Departments</label> <br>
 
-                        <div class="form-check">
-                            <input type="checkbox" name="all" id="all">
-                            <label for="all">All Departments</label> <br>
+                            @foreach ($departments as $department)
+                                <input type="checkbox" class="other-items" name="question_dept_selection[]" id="question_dept_selection_{{ $department->id }}" value="{{ $department->id }}">
+                                <label for="question_dept_selection_{{ $department->id }}">{{ $department->name }}</label> <br>
+                            @endforeach
 
-                            <input type="checkbox" class="other-item" name="dept_1" id="dept_1">
-                            <label for="dept_1">Department 1</label> <br>
+                            <input type="text" name="sub_category_name" placeholder="Insert Sub-Category Name">
+                            <br>
 
-                            <input type="checkbox" class="other-item" name="dept_2" id="dept_2">
-                            <label for="dept_2">Department 2</label> <br>
-                        </div>
+                            <input type="text" name="sub_category_description" placeholder="Insert Sub-Category Description">
+                            <br>
 
-                        <input type="text" placeholder="Insert Sub-Category Name">
+                            <input type="text" name="question" placeholder="Write the Question">
 
-                        <input type="text" placeholder="Insert Sub-Category Description">
+                            <br>
+                            {{-- <p>Which Rating System to be used? </p>
 
-                        <input type="text" placeholder="Write the Question">
+                            <div class="form-check">
+                                <input type="checkbox" name="rating_1" id="rating_1">
+                                <label for="all">Rating_1</label> <br>
 
-                        <br>
-                        <p>Which Rating System to be used? </p>
+                                <input type="checkbox" class="other-item" name="rating_2" id="rating_2">
+                                <label for="rating_2">Rating 2</label> <br>
 
-                        <div class="form-check">
-                            <input type="checkbox" name="rating_1" id="rating_1">
-                            <label for="all">Rating_1</label> <br>
+                                <input type="checkbox" class="other-item" name="rating_3" id="rating_3">
+                                <label for="rating_3">Rating 3</label> <br>
+                            </div> --}}
 
-                            <input type="checkbox" class="other-item" name="rating_2" id="rating_2">
-                            <label for="rating_2">Rating 2</label> <br>
-
-                            <input type="checkbox" class="other-item" name="rating_3" id="rating_3">
-                            <label for="rating_3">Rating 3</label> <br>
-                        </div>
-
-                        <div class="fw-bold">
-                            <button class="btn btn-outline-success">Save!</button>
-                        </div>
+                            <div class="fw-bold">
+                                <button class="btn btn-outline-success">Save!</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
 
@@ -417,10 +417,41 @@
     }
 
 
-    // for the selection of departments
+    // for the selection of departments in question categories
     document.addEventListener('DOMContentLoaded', function () {
         const all_deparments_selection = document.querySelector('.all');
         const others = document.querySelectorAll('.other-item');
+
+        function updateState() {
+            const anyOtherChecked = Array.from(others).some(cb => cb.checked);
+
+            if (all_deparments_selection.checked) {
+                // Item 1 is checked → disable others
+                others.forEach(cb => {
+                    cb.disabled = true;
+                    cb.checked = false; // optional: force uncheck
+                });
+            } else if (anyOtherChecked) {
+                // One of Item 2/3 is checked → disable Item 1
+                all_deparments_selection.disabled = true;
+            } else {
+                // None checked → enable all
+                all_deparments_selection.disabled = false;
+                others.forEach(cb => {
+                    cb.disabled = false;
+                });
+            }
+        }
+
+        // Attach listeners
+        all_deparments_selection.addEventListener('change', updateState);
+        others.forEach(cb => cb.addEventListener('change', updateState));
+    });
+
+    // for the selection of departments in questions
+    document.addEventListener('DOMContentLoaded', function () {
+        const all_deparments_selection = document.querySelector('.all_depts');
+        const others = document.querySelectorAll('.other-items');
 
         function updateState() {
             const anyOtherChecked = Array.from(others).some(cb => cb.checked);

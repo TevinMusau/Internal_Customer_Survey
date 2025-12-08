@@ -17,12 +17,12 @@ class Department extends Model
 
     // Relationship to Survey Questions Table (Many-To-Many)
     public function survey_question(){
-        return $this->belongsToMany(Survey_Question::class, 'department_survey_question');
+        return $this->belongsToMany(SurveyQuestion::class, 'department_survey_question')->withTimestamps();
     }
 
     // Relationship to Question Category Table (One-To-Many)
     public function question_category() {
-        return $this->belongsToMany(QuestionCategory::class, 'department_question_category', 'question_category_id');
+        return $this->belongsToMany(QuestionCategory::class, 'department_question_category')->withTimestamps();
     }
 
 

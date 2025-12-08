@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('question_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('category_name');
+            $table->string('category_name')->unique();
             $table->boolean('appears_in_all_departments')->default(0); // 0 - no; 1 - yes
             // $table->foreignId('department_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();

@@ -58,7 +58,6 @@ class QuestionCategoryController extends Controller
             $data['category_name'] = $request->category_name;
             $data['appears_in_all_departments'] = 0;
 
-
             // This will be an array of checked values, or null if none
             $selected_departments = $request->input('dept_selection', []);
 

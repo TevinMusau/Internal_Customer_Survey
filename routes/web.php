@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthManager;
 use App\Http\Controllers\NewUserController;
 use App\Http\Controllers\EditUserController;
 use App\Http\Controllers\SurveysController;
+use App\Http\Controllers\QuestionsController;
 
 
 Route::get('/', function () {
@@ -59,3 +60,4 @@ Route::get('/dashboard/{user_id}/surveys/staff-survey/intro', [SurveysController
 Route::get('/dashboard/{user_id}/surveys/staff-survey/test', [SurveysController::class, 'beginTest'])->name('staff.survey');
 
 Route::post('/dashboard/{user_id}/q_category/create', [QuestionCategoryController::class, 'store'])->name('create.category');
+Route::post('/dashboard/{user_id}/survey_question/create', [QuestionsController::class, 'store'])->name('create.question');

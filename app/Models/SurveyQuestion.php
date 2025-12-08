@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Survey_Question extends Model
+class SurveyQuestion extends Model
 {
     protected $fillable = [
         'sub_category_name',
@@ -32,11 +32,11 @@ class Survey_Question extends Model
     }
 
     public function department(){
-        return $this->belongsToMany(Department::class, 'department_survey_question');
+        return $this->belongsToMany(Department::class, 'department_survey_questions')->withTimestamps();
     }
 
     public function question_category(){
-        return $this->belongsTo(Question_Category::class);
+        return $this->belongsTo(QuestionCategory::class);
     }
 
     public function rating(){

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Department;
+use App\Models\QuestionCategory;
 
 class DashboardController extends Controller
 {
@@ -24,10 +25,13 @@ class DashboardController extends Controller
         // get all departments
         $departments = Department::all();
 
+        // get all question categories
+        $question_categories = QuestionCategory::all();
+
         // get all admins
         $admins = User::where('level', '!=', 'normalUser')->get();
 
-        return view('dashboard', compact('users', 'admins', 'departments'));
+        return view('dashboard', compact('users', 'admins', 'departments', 'question_categories'));
     }
 
     function newUserPage($id) {

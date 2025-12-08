@@ -17,7 +17,7 @@ class Staff_Survey_Result extends Model
     ];
 
     public function survey_question(){
-        return $this->belongsTo(Survey_Question::class);
+        return $this->belongsTo(SurveyQuestion::class);
     }
 
     public function user(){

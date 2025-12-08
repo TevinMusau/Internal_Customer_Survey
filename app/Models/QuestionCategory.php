@@ -15,10 +15,10 @@ class QuestionCategory extends Model
 
     // Relationship to Survey Question Table (One-To-Many)
     public function survey_question(){
-        return $this->hasMany(Survey_Question::class, 'question_category_id');
+        return $this->hasMany(SurveyQuestion::class, 'question_category_id');
     }
 
     public function department(){
-        return $this->belongsToMany(Department::class, 'department_question_category', 'department_id');
+        return $this->belongsToMany(Department::class, 'department_question_category')->withTimestamps();
     }
 }
