@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="text-center mb-3">
-            <a href="{{ route('staff.survey.intro', ['user_id' => auth()->user()->id]) }}" class="text-decoration-none">
+            <a href="{{ route('staff.survey.ratings_explained', ['user_id' => auth()->user()->id]) }}" class="text-decoration-none">
                 <button class="btn btn-outline-success">Understand the Grading System</button>
             </a>
         </div>

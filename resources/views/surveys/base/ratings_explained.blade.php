@@ -37,12 +37,12 @@
         <div class="col-12 text-center">
 
             @if (str_contains(url()->current(), 'managing'))
-                <a class="text-decoration-none" href="{{ route('mp.survey.p1', ['user_id' => auth()->user()->id]) }}">
+                <a class="text-decoration-none" href="{{ route('mp.survey', ['user_id' => auth()->user()->id]) }}">
                     <button class="btn btn-outline-info p-2 mt-1 text-center">Let's Get Started!</button>
                 </a>
 
             @elseif (str_contains(url()->current(), 'staff'))
-                <a class="text-decoration-none" href="{{ route('staff.survey', ['user_id' => auth()->user()->id]) }}">
+                <a class="text-decoration-none" href="{{ route('staff.survey.departments', ['user_id' => auth()->user()->id]) }}">
                     <button class="btn btn-outline-info p-2 mt-1 text-center">Select a Department!</button>
                 </a>
 

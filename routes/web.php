@@ -37,27 +37,18 @@ Route::post('/dashboard/{admin_id}/{user_id}/edit-user', [EditUserController::cl
 
 // -------------------------- Surveys ----------------------
 // Managing Partner Survey
-Route::get('/dashboard/{user_id}/surveys/managing-partner-survey', [SurveysController::class, 'introToManagingPartnerSurvey'])->name('mp.survey.about');
+Route::get('/dashboard/{user_id}/surveys/managing-partner-survey', [SurveysController::class, 'introToManagingPartnerSurvey'])->name('mp.survey.intro');
+Route::get('/dashboard/{user_id}/surveys/managing-partner-survey/ratings_explained', [SurveysController::class, 'ratingsExplained'])->name('mp.survey.ratings_explained');
 
-Route::get('/dashboard/{user_id}/surveys/managing-partner-survey/ratings_explained', [SurveysController::class, 'ratingsExplained'])->name('mp.survey.intro');
-
-Route::get('/dashboard/{user_id}/surveys/managing-partner-survey/survey/p1', [SurveysController::class, 'managingPartnerSurvey'])->name('mp.survey.p1');
-Route::post('/dashboard/{user_id}/surveys/managing-partner-survey/survey/p1', [SurveysController::class, 'managingPartnerSurveyStep1'])->name('mp.survey.p1.post');
-
-Route::get('/dashboard/{user_id}/surveys/managing-partner-survey/survey/p2', [SurveysController::class, 'managingPartnerSurveyStep2'])->name('mp.survey.p2');
-Route::post('/dashboard/{user_id}/surveys/managing-partner-survey/survey/p2', [SurveysController::class, 'managingPartnerSurveyStep2'])->name('mp.survey.p2.post');
-
-Route::get('/dashboard/{user_id}/surveys/managing-partner-survey/survey/p2', [SurveysController::class, 'managingPartnerSurveyStep2'])->name('mp.survey.p2');
-Route::post('/dashboard/{user_id}/surveys/managing-partner-survey/survey/p2', [SurveysController::class, 'managingPartnerSurveyStep2'])->name('mp.survey.p2.post');
-
-Route::get('/dashboard/{user_id}/surveys/managing-partner-survey/survey/p3', [SurveysController::class, 'managingPartnerSurveyStep3'])->name('mp.survey.p3');
-Route::post( '/dashboard/{user_id}/surveys/managing-partner-survey/survey/p3', [SurveysController::class, 'managingPartnerSurveyStep3'])->name('mp.survey.p3.post');
+Route::get('/dashboard/{user_id}/surveys/managing-partner-survey/survey', [SurveysController::class, 'managingPartnerSurvey'])->name('mp.survey');
+Route::post('/dashboard/{user_id}/surveys/managing-partner-survey/survey', [SurveysController::class, 'managingPartnerSurvey'])->name('mp.survey.post');
 
 // Staff Survey
-Route::get('/dashboard/{user_id}/surveys/staff-survey', [SurveysController::class, 'toStaffSurveyPage'])->name('staff.surveypage');
-Route::get('/dashboard/{user_id}/surveys/staff-survey/intro', [SurveysController::class, 'ratingsExplained'])->name('staff.survey.intro');
+Route::get('/dashboard/{user_id}/surveys/staff-survey', [SurveysController::class, 'toStaffSurveyIntroPage'])->name('staffsurveypage.intro');
+Route::get('/dashboard/{user_id}/surveys/staff-survey/ratings_explained', [SurveysController::class, 'ratingsExplained'])->name('staff.survey.ratings_explained');
+Route::get('/dashboard/{user_id}/surveys/staff-survey/select_dept', [SurveysController::class, 'staffSurveySelectDepartments'])->name('staff.survey.departments');
+Route::post('/dashboard/{user_id}/surveys/staff-survey/select_dept', [SurveysController::class, 'displaySurveyPerDepartment'])->name('display.staff.survey');
 
-Route::get('/dashboard/{user_id}/surveys/staff-survey/test', [SurveysController::class, 'beginTest'])->name('staff.survey');
 
 Route::post('/dashboard/{user_id}/q_category/create', [QuestionCategoryController::class, 'store'])->name('create.category');
 Route::post('/dashboard/{user_id}/survey_question/create', [QuestionsController::class, 'store'])->name('create.question');
