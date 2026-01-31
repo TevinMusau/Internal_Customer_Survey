@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\DepartmentUser;
 use Illuminate\Support\Facades\Log;
 
 class NewUserController extends Controller
@@ -15,7 +16,8 @@ class NewUserController extends Controller
             'fname' => 'required|min:3|max:50',
             'lname' => 'required|min:3|max:50',
             'email' => 'required|email',
-            'department_selection' => 'required',
+            'department_selection' => 'required|array',
+            'department_selection.*' => 'exists:departments,id',
             'role' => 'required',
             'password' => ['required', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[0-9]/','regex:/[@$!%*#?&]/', 'confirmed']
         ]);
@@ -55,9 +57,6 @@ class NewUserController extends Controller
         $data['last_name'] = $request->lname;
         $data['email'] = $request->email;
         $data['password'] = $request->password;
-
-        $data['department_id'] = $request->department_selection;
-
         $data['role'] = $request->role;
 
         if ($request->boolean('supervisor')) {
@@ -91,6 +90,8 @@ class NewUserController extends Controller
         // a model does all the queries to the database
         // the below creates a user by passing in to the model all the items which the user has inputted
         $user = User::create($data);
+
+        $user->departments()->sync($request->department_selection);
 
         // check if user creation is successful
         // if there is no user

@@ -62,12 +62,13 @@
 
                 <a class="nav-link active" onclick="myFunction()" aria-current="page" href="#">All Users</a>
                 <a class="nav-link" onclick="myFunction2()" href="#">All Admins</a>
-                <a class="nav-link" onclick="myFunction3()" href="#">Surveys</a>
-                <a class="nav-link" onclick="myFunction4()" href="#">Survey Questions</a>
-                <a class="nav-link" onclick="myFunction5()" href="#">Launch Survey</a>
-                <a class="nav-link" onclick="myFunction6()" href="#">Notifications</a>
-                <a class="nav-link" onclick="myFunction7()" href="#">View Survey Reports</a>
-                <a class="nav-link" onclick="myFunction8()" href="#">Comments</a>
+                <a class="nav-link" onclick="myFunction3()" href="#">All Departments</a>
+                <a class="nav-link" onclick="myFunction4()" href="#">Surveys</a>
+                <a class="nav-link" onclick="myFunction5()" href="#">Survey Questions</a>
+                <a class="nav-link" onclick="myFunction6()" href="#">Launch Survey</a>
+                <a class="nav-link" onclick="myFunction7()" href="#">Notifications</a>
+                <a class="nav-link" onclick="myFunction8()" href="#">View Survey Reports</a>
+                <a class="nav-link" onclick="myFunction9()" href="#">Comments</a>
             </nav>
         </div>
 
@@ -114,7 +115,7 @@
                                 <td class="text-center">{{ $user->last_name }}</td>
                                 <td class="text-center">{{ $user->initials }}</td>
                                 <td class="text-center">{{ $user->email }}</td>
-                                <td class="text-center">{{ optional($user->department)->name ?? 'None' }}</td>
+                                <td class="text-center">{{ $user->departments->pluck('name')->join(', ') ?: 'None' }}</td>
                                 <td class="text-center">{{ $user->role }}</td>
                                 <td class="text-center">{{ $user->level }}</td>
                                 @if ($user->isSupervisor)
@@ -179,7 +180,7 @@
                                 <td class="text-center">{{ $admin->first_name }}</td>
                                 <td class="text-center">{{ $admin->last_name }}</td>
                                 <td class="text-center">{{ $admin->email }}</td>
-                                <td class="text-center">{{ $admin->department }}</td>
+                                <td class="text-center">{{ $user->departments->pluck('name')->join(', ') ?: 'None' }}</td>
                                 <td class="text-center">{{ $admin->role }}</td>
                                 <td class="text-center">{{ $admin->level }}</td>
                                 @if (auth()->user()->level == 'superAdmin' || auth()->user()->level == 'staffAdmin')
@@ -215,6 +216,72 @@
                     </table>
                 </div>
             </div>
+
+{{-- --------------------------------------- DEPARTMENTS SECTION ----------------------------------------- --}}
+            <div id="departments" class="row" style="display: none">
+                <h3 class="text-center fw-bold p-4" id="Title">
+                    <i>All Departments</i>
+                </h3>
+
+                <div class="text-end">
+                    <a class="" href="{{ route('create.department', ['admin_id'=>auth()->user()->id]) }}">
+                        <button class="form-control w-25 btn btn-outline-primary mb-3"> + New Department </button>
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped table-borderless m-3">
+                        <tbody>
+                            <thead class="table-dark">
+                                <th class="text-center">Department ID</th>
+                                <th class="text-center">Department Name</th>
+                                <th class="text-center">Users in Department</th>
+                                @if (auth()->user()->level == 'superAdmin' || auth()->user()->level == 'staffAdmin')
+                                <th class="text-center" colspan="5">Action</th>
+                                @endif
+                            </thead>
+                            @foreach ($departments as $department)
+                            <tr>
+                                <td class="text-center">{{ $department->id }}</td>
+                                <td class="text-center">{{ $department->name }}</td>
+                                @if ($department->users->count())
+                                <td class="text-center">
+                                    @foreach ($department->users as $department_user)
+                                        {{ $department_user->initials }}@if (!$loop->last), @endif
+                                    @endforeach
+                                </td>
+                                @else
+                                    <td class="text-center">No Users</td>
+                                @endif
+                                
+                                @if (auth()->user()->level == 'superAdmin' || auth()->user()->level == 'staffAdmin')
+                                    <td class="text-center">
+                                        <a class="text-decoration-none" href="{{ route('edit.department', ['admin_id' => auth()->user()->id, 'department_id' => $department->id]) }}">
+                                            <button class="btn btn-outline-primary" title="Edit User">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </button>
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a class="text-decoration-none" 
+                                            onclick="if (!window.confirm('This action is irreversible. Are you sure you want to proceed?')) return false" 
+                                            href="{{ route('delete.department', ['admin_id' => auth()->user()->id, 'department_id' => $department->id]) }}">
+                                            <button class="form-control btn btn-outline-danger mb-3" title="Delete Department">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </a>
+                                        {{-- <span>
+                                            <button class="form-control w-25 btn btn-outline-danger mb-3">Delete</button>
+                                        </span> --}}
+                                    </td>
+                                @endif
+                            </tr>
+                        </tbody>
+                        @endforeach
+                    </table>
+                </div>
+            </div>
+
 
 {{-- --------------------------------------- SURVEYS SECTION ----------------------------------------- --}}
             <div id="surveys" class="row" style="display: none">
@@ -274,6 +341,8 @@
                     </div>
                 </div>
 
+{{------------------------------------------------- MAKE NEW CATEGORY ----------------------------------------}}
+
                 <div class="p-1" id="new_category" style="display: none">
                     <div class="col-12 border border-warning text-center">
                         <form class="form-group" action="{{ route('create.category', ['user_id' => auth()->user()->id]) }}" method="POST">
@@ -298,6 +367,9 @@
                         </form>
                     </div>
                 </div>
+
+{{----------------------------------------- EXISTING CATEGORY --------------------------------------------}}
+
                 <div class="p-1" id="existing_category" style="display: none">
                     <div class="col-12 border border-warning text-center">
                         <form action="{{ route('create.question',['user_id' => auth()->user()->id]) }}" method="POST">
@@ -305,8 +377,9 @@
                             <p>Select a Category: </p>
                             
                             <div class="form-check">
+
                                 @foreach ($question_categories as $category)
-                                    <input type="radio" name="question_category" id="question_category" value="{{ $category->id }}">
+                                    <input class="category-radio" type="radio" name="question_category" id="question_category" value="{{ $category->id }}" data-departments='@json($category->department->pluck("id"))'>
                                     <label for="question_category">{{ $category->category_name }}</label> <br>
                                 @endforeach
                             </div>
@@ -318,7 +391,7 @@
                             <label for="question_dept_selection">All Departments</label> <br>
 
                             @foreach ($departments as $department)
-                                <input type="checkbox" class="other-items" name="question_dept_selection[]" id="question_dept_selection_{{ $department->id }}" value="{{ $department->id }}">
+                                <input type="checkbox" class="other-items department-checkbox" name="question_dept_selection[]" id="question_dept_selection_{{ $department->id }}" value="{{ $department->id }}">
                                 <label for="question_dept_selection_{{ $department->id }}">{{ $department->name }}</label> <br>
                             @endforeach
 
@@ -350,7 +423,7 @@
                         </form>
                     </div>
                 </div>
-
+                
             </div>
 
 {{-- --------------------------------------- LAUNCH SURVEY SECTION ----------------------------------------- --}}
@@ -397,6 +470,45 @@
 </div>
 
 <script>
+const allDeptsCheckbox = document.querySelector('.all_depts');
+const departmentCheckboxes = document.querySelectorAll('.department-checkbox');
+const totalDepartments = departmentCheckboxes.length;
+
+document.querySelectorAll('.category-radio').forEach(radio => {
+    radio.addEventListener('change', function () {
+        const allowedDepartments = JSON.parse(this.dataset.departments);
+
+        // Case 1: Category applies to ALL departments
+        if (allowedDepartments.length === totalDepartments) {
+            allDeptsCheckbox.disabled = false;
+            allDeptsCheckbox.checked = true;
+
+            departmentCheckboxes.forEach(cb => {
+                cb.checked = false;
+                cb.disabled = true;
+            });
+
+            return;
+        }
+
+        // Case 2: Category applies to SPECIFIC departments
+        allDeptsCheckbox.checked = false;
+        allDeptsCheckbox.disabled = true;
+
+        departmentCheckboxes.forEach(cb => {
+            const deptId = parseInt(cb.value);
+
+            if (allowedDepartments.includes(deptId)) {
+                cb.disabled = false;
+            } else {
+                cb.checked = false;
+                cb.disabled = true;
+            }
+        });
+    });
+});
+
+
 
     var new_category_btn = document.getElementById("new_category");
 
@@ -497,6 +609,7 @@
     function myFunction(){
         var users = document.getElementById("users");
         var admins = document.getElementById("admins");
+        var departments = document.getElementById("departments");
         var surveys = document.getElementById("surveys");
         var questions = document.getElementById("questions");
         var launch_survey = document.getElementById("launch_survey");
@@ -504,9 +617,9 @@
         var survey_reports = document.getElementById("survey_reports");
         var comments = document.getElementById("comments");
 
-
         users.style.display = 'block';
         admins.style.display = 'none';
+        departments.style.display = 'none';
         surveys.style.display = 'none';
         questions.style.display = 'none';
         launch_survey.style.display = 'none';
@@ -519,6 +632,7 @@
     function myFunction2(){
         var users = document.getElementById("users");
         var admins = document.getElementById("admins");
+        var departments = document.getElementById("departments");
         var surveys = document.getElementById("surveys");
         var questions = document.getElementById("questions");
         var launch_survey = document.getElementById("launch_survey");
@@ -528,6 +642,7 @@
 
         users.style.display = 'none';
         admins.style.display = 'block';
+        departments.style.display = 'none';
         surveys.style.display = 'none';
         questions.style.display = 'none';
         launch_survey.style.display = 'none';
@@ -539,6 +654,7 @@
     function myFunction3(){
         var users = document.getElementById("users");
         var admins = document.getElementById("admins");
+        var departments = document.getElementById("departments");
         var surveys = document.getElementById("surveys");
         var questions = document.getElementById("questions");
         var launch_survey = document.getElementById("launch_survey");
@@ -548,7 +664,8 @@
 
         users.style.display = 'none';
         admins.style.display = 'none';
-        surveys.style.display = 'block';
+        departments.style.display = 'block';
+        surveys.style.display = 'none';
         questions.style.display = 'none';
         launch_survey.style.display = 'none';
         notifications.style.display = 'none';
@@ -559,6 +676,7 @@
     function myFunction4(){
         var users = document.getElementById("users");
         var admins = document.getElementById("admins");
+        var departments = document.getElementById("departments");
         var surveys = document.getElementById("surveys");
         var questions = document.getElementById("questions");
         var launch_survey = document.getElementById("launch_survey");
@@ -568,8 +686,9 @@
 
         users.style.display = 'none';
         admins.style.display = 'none';
-        surveys.style.display = 'none';
-        questions.style.display = 'block';
+        departments.style.display = 'none';
+        surveys.style.display = 'block';
+        questions.style.display = 'none';
         launch_survey.style.display = 'none';
         notifications.style.display = 'none';
         survey_reports.style.display = 'none';
@@ -579,6 +698,7 @@
     function myFunction5(){
         var users = document.getElementById("users");
         var admins = document.getElementById("admins");
+        var departments = document.getElementById("departments");
         var surveys = document.getElementById("surveys");
         var questions = document.getElementById("questions");
         var launch_survey = document.getElementById("launch_survey");
@@ -588,9 +708,10 @@
 
         users.style.display = 'none';
         admins.style.display = 'none';
+        departments.style.display = 'none';
         surveys.style.display = 'none';
-        questions.style.display = 'none';
-        launch_survey.style.display = 'block';
+        questions.style.display = 'block';
+        launch_survey.style.display = 'none';
         notifications.style.display = 'none';
         survey_reports.style.display = 'none';
         comments.style.display = 'none';
@@ -599,6 +720,7 @@
     function myFunction6(){
         var users = document.getElementById("users");
         var admins = document.getElementById("admins");
+        var departments = document.getElementById("departments");
         var surveys = document.getElementById("surveys");
         var questions = document.getElementById("questions");
         var launch_survey = document.getElementById("launch_survey");
@@ -608,6 +730,29 @@
 
         users.style.display = 'none';
         admins.style.display = 'none';
+        departments.style.display = 'none';
+        surveys.style.display = 'none';
+        questions.style.display = 'none';
+        launch_survey.style.display = 'block';
+        notifications.style.display = 'none';
+        survey_reports.style.display = 'none';
+        comments.style.display = 'none';
+    }
+
+    function myFunction7(){
+        var users = document.getElementById("users");
+        var admins = document.getElementById("admins");
+        var departments = document.getElementById("departments");
+        var surveys = document.getElementById("surveys");
+        var questions = document.getElementById("questions");
+        var launch_survey = document.getElementById("launch_survey");
+        var notifications = document.getElementById("notifications");
+        var survey_reports = document.getElementById("survey_reports");
+        var comments = document.getElementById("comments");
+
+        users.style.display = 'none';
+        admins.style.display = 'none';
+        departments.style.display = 'none';
         surveys.style.display = 'none';
         questions.style.display = 'none';
         launch_survey.style.display = 'none';
@@ -616,9 +761,10 @@
         comments.style.display = 'none';
     }
 
-    function myFunction7(){
+    function myFunction8(){
         var users = document.getElementById("users");
         var admins = document.getElementById("admins");
+        var departments = document.getElementById("departments");
         var surveys = document.getElementById("surveys");
         var questions = document.getElementById("questions");
         var launch_survey = document.getElementById("launch_survey");
@@ -628,6 +774,7 @@
 
         users.style.display = 'none';
         admins.style.display = 'none';
+        departments.style.display = 'none';
         surveys.style.display = 'none';
         questions.style.display = 'none';
         launch_survey.style.display = 'none';
@@ -636,45 +783,26 @@
         comments.style.display = 'none';
     }
 
-    function myFunction8(){
+    function myFunction9(){
         var users = document.getElementById("users");
         var admins = document.getElementById("admins");
+        var departments = document.getElementById("departments");
         var surveys = document.getElementById("surveys");
         var questions = document.getElementById("questions");
         var launch_survey = document.getElementById("launch_survey");
         var notifications = document.getElementById("notifications");
         var survey_reports = document.getElementById("survey_reports");
-        var comments = document.getElementById("comments");
 
         users.style.display = 'none';
         admins.style.display = 'none';
+        departments.style.display = 'none';
         surveys.style.display = 'none';
         questions.style.display = 'none';
         launch_survey.style.display = 'none';
         notifications.style.display = 'none';
         survey_reports.style.display = 'none';
-        comments.style.display = 'block';
+        rejected.style.display = 'block';
     }
-
-    // function myFunction7(){
-    //     var users = document.getElementById("users");
-    //     var admins = document.getElementById("admins");
-    //     var surveys = document.getElementById("surveys");
-    //     var questions = document.getElementById("questions");
-    //     var launch_survey = document.getElementById("launch_survey");
-    //     var notifications = document.getElementById("notifications");
-    //     var survey_reports = document.getElementById("survey_reports");
-
-
-    //     users.style.display = 'none';
-    //     admins.style.display = 'none';
-    //     surveys.style.display = 'none';
-    //     questions.style.display = 'none';
-    //     launch_survey.style.display = 'none';
-    //     notifications.style.display = 'none';
-    //     survey_reports.style.display = 'none';
-    //     rejected.style.display = 'block';
-    // }
 </script>
 
 

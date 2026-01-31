@@ -54,8 +54,8 @@ class User extends Authenticatable
     }
 
     // Relationship to Department Table (One-To-One)
-    public function department(){
-        return $this->belongsTo(Department::class);
+    public function departments(){
+        return $this->belongsToMany(Department::class, 'department_users');
     }
 
     // Relationship to Comments Table (One-To-Many)

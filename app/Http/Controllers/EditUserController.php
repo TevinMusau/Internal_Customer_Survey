@@ -18,7 +18,7 @@ class EditUserController extends Controller
         }
 
         // find the user's details based on the user's ID
-        $user = User::find($user_id);
+        $user = User::with('departments')->find($user_id);
 
         // get all departments names (a collection of just the names)
         $departments = Department::all();
@@ -39,7 +39,6 @@ class EditUserController extends Controller
         $user->last_name = $request->input('lname');
         $user->initials = $request->input('initials');
         $user->email = $request->input('email');
-        $user->department_id = $request->input('department_selection');
         $user->role = $request->input('role');
         if($request->input('supervisor')){
             $user->isSupervisor = 1;
@@ -51,6 +50,9 @@ class EditUserController extends Controller
         // check if the password fields are empty
         if ($request->input('password') == null && $request ->input('password_confirmation') == null) {
             
+            // sync the user and the department(s) they belong to
+            $user->departments()->sync($request->department_selection);
+
             // update new user credentials on the DB
             $user->update();
 
@@ -65,11 +67,14 @@ class EditUserController extends Controller
 
             // hash the password
             $user->password = Hash::make($request->input('password'));
+
+            // sync the user and the department(s) they belong to
+            $user->departments()->sync($request->department_selection);
             
             // update the details in the DB
             $user->update();
 
-            return redirect('/dashboard/'.$admin_id)->with('success', 'User Details Successfully Updated');
+            return redirect(to: '/dashboard/'.$admin_id)->with('success', 'User Details Successfully Updated');
         }
     }
 }

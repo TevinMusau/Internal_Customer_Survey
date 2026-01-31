@@ -11,8 +11,8 @@ class Department extends Model
     ];
 
     // Relationship to User Table (One-To-One)
-    public function user(){
-        return $this->hasOne(User::class);
+    public function users(){
+        return $this->belongsToMany(User::class, 'department_users')->withTimestamps();
     }
 
     // Relationship to Survey Questions Table (Many-To-Many)

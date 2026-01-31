@@ -8,7 +8,7 @@ use App\Http\Controllers\NewUserController;
 use App\Http\Controllers\EditUserController;
 use App\Http\Controllers\SurveysController;
 use App\Http\Controllers\QuestionsController;
-
+use App\Http\Controllers\DepartmentController;
 
 Route::get('/', function () {
     return view('index');
@@ -52,3 +52,12 @@ Route::post('/dashboard/{user_id}/surveys/staff-survey/select_dept', [SurveysCon
 
 Route::post('/dashboard/{user_id}/q_category/create', [QuestionCategoryController::class, 'store'])->name('create.category');
 Route::post('/dashboard/{user_id}/survey_question/create', [QuestionsController::class, 'store'])->name('create.question');
+
+// department routes
+Route::get('/dashboard/{admin_id}/departments/', [DashboardController::class, 'toNewDepartmentPage'])->name('view.departments');
+Route::post('/dashboard/{admin_id}/departments/', [DepartmentController::class, 'createNewDepartment'])->name('create.department');
+
+Route::get('/dashboard/{admin_id}/{department_id}/edit-department', [DepartmentController::class, 'toEditDepartmentPage'])->name('edit.department');
+Route::post('/dashboard/{admin_id}/{department_id}/edit-department', [DepartmentController::class, 'editDepartment'])->name('edit.department.post');
+Route::post('/dashboard/{admin_id}/{department_id}/delete-department', [DepartmentController::class, 'deleteDepartment'])->name('delete.department');
+

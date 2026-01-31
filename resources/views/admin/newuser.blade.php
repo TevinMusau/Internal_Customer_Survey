@@ -67,7 +67,7 @@
                     @foreach ($departments as $department)
                     <div class="form-check">
                         <div class="d-flex justify-content-evenly">
-                            <input class="btn-check" type="radio" name="department_selection" value="{{ $department->id }}" id="department_selection_{{ $department->id }}" autocomplete="off">
+                            <input class="btn-check" type="checkbox" name="department_selection[]" value="{{ $department->id }}" id="department_selection_{{ $department->id }}" autocomplete="off">
                             <label class="btn btn-outline-info" for="department_selection_{{ $department->id }}"> {{ $department->name }} </label>
                         </div>
                     </div>

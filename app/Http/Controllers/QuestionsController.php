@@ -63,7 +63,6 @@ class QuestionsController extends Controller
             $data['appears_in'] = 0;
             $data['affects_all_departments'] = 1;
 
-
             // This will be an array of checked values, or null if none
             $selected_departments = $request->input('question_dept_selection', []);
 
