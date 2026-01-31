@@ -59,5 +59,6 @@ Route::post('/dashboard/{admin_id}/departments/', [DepartmentController::class, 
 
 Route::get('/dashboard/{admin_id}/{department_id}/edit-department', [DepartmentController::class, 'toEditDepartmentPage'])->name('edit.department');
 Route::post('/dashboard/{admin_id}/{department_id}/edit-department', [DepartmentController::class, 'editDepartment'])->name('edit.department.post');
-Route::post('/dashboard/{admin_id}/{department_id}/delete-department', [DepartmentController::class, 'deleteDepartment'])->name('delete.department');
+
+Route::get('/dashboard/{admin_id}/{department_id}/delete-department', [DepartmentController::class, 'deleteDepartment'])->name('delete.department');
 

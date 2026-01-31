@@ -180,7 +180,7 @@
                                 <td class="text-center">{{ $admin->first_name }}</td>
                                 <td class="text-center">{{ $admin->last_name }}</td>
                                 <td class="text-center">{{ $admin->email }}</td>
-                                <td class="text-center">{{ $user->departments->pluck('name')->join(', ') ?: 'None' }}</td>
+                                <td class="text-center">{{ $admin->departments->pluck('name')->join(', ') ?: 'None' }}</td>
                                 <td class="text-center">{{ $admin->role }}</td>
                                 <td class="text-center">{{ $admin->level }}</td>
                                 @if (auth()->user()->level == 'superAdmin' || auth()->user()->level == 'staffAdmin')
