@@ -30,4 +30,9 @@ class Department extends Model
     public function departments_completed(){
         return $this->hasOne(Staff_Survey_Department_Completed::class);
     }
+
+    // Relationship to Staff Survey Results Table (One-To-Many)
+    public function department_results(){
+        return $this->hasMany(Staff_Survey_Result::class);
+    }
 }

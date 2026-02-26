@@ -48,6 +48,7 @@ Route::get('/dashboard/{user_id}/surveys/staff-survey', [SurveysController::clas
 Route::get('/dashboard/{user_id}/surveys/staff-survey/ratings_explained', [SurveysController::class, 'ratingsExplained'])->name('staff.survey.ratings_explained');
 Route::get('/dashboard/{user_id}/surveys/staff-survey/select_dept', [SurveysController::class, 'staffSurveySelectDepartments'])->name('staff.survey.departments');
 Route::post('/dashboard/{user_id}/surveys/staff-survey/select_dept', [SurveysController::class, 'displaySurveyPerDepartment'])->name('display.staff.survey');
+Route::post('/dashboard/{user_id}/{department_id}/surveys/staff-survey/submit', [SurveysController::class, 'submit'])->name('submit.staff.survey');
 
 
 Route::post('/dashboard/{user_id}/q_category/create', [QuestionCategoryController::class, 'store'])->name('create.category');

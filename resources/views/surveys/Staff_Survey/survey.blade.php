@@ -11,7 +11,7 @@
                 <h1 class="fw-bold">Managing Parter Survey</h1>
             </div>
             
-            <form class="form-group" action="#" method="POST">
+            <form class="form-group" action="{{ route('submit.staff.survey', ['department_id' => (int)$selected_department_id, 'user_id' => auth()->user()->id]) }}" method="POST">
                 @csrf
 
 {{--------------------- DISPLAY ALL THE COMMON SURVEY QUESTION CATEGORIES AND SURVEY QUESTIONS ---------------}}
@@ -38,26 +38,25 @@
                                             <p>{{ $survey_question->question }}</p>
                                             <p>Ratings!</p>
                                             <div class="">
-                                                <div class="mb-2">
-                                                    <input type="radio" name="mp_punctuality_rating" id="exceptional" value="5">
-                                                    <label class="btn btn-primary" for="exceptional">5 - Exceptional</label>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <input type="radio" name="mp_punctuality_rating" id="exceeds" value="4">
-                                                    <label class="btn btn-primary" for="exceeds">4 - Exceeds Expectations</label>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <input type="radio" name="mp_punctuality_rating" id="meets" value="3">
-                                                    <label class="btn btn-primary" for="meets">3 - Meets Expectations</label>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <input type="radio" name="mp_punctuality_rating" id="below" value="2">
-                                                    <label class="btn btn-primary" for="below">2 - Below Expectations</label>
-                                                </div>
-                                                <div class="">
-                                                    <input type="radio" name="mp_punctuality_rating" id="improve" value="1">
-                                                    <label class="btn btn-primary" for="improve">1 - Needs Improvement</label>
-                                                </div>
+                                                @foreach ($department_users as $user)
+                                                    <div class="mb-2">
+                                                        <h4 class="btn btn-primary"> {{ $user->first_name }} </h4>
+
+                                                        @for ($i = 5; $i >= 1; $i--)
+                                                            <input type="radio" 
+                                                                name="ratings[{{ $survey_question->id }}][{{ $user->id }}]" 
+                                                                value="{{ $i }}">
+                                                            <label>
+                                                                @if($i == 5) Exceptional
+                                                                @elseif($i == 4) Exceeds Expectations
+                                                                @elseif($i == 3) Meets Expectations
+                                                                @elseif($i == 2) Below Expectations
+                                                                @else Needs Improvement
+                                                                @endif
+                                                            </label>
+                                                        @endfor
+                                                    </div>
+                                                @endforeach
                                             </div>
                                             <hr>
                                         </div>
@@ -72,8 +71,9 @@
 {{------------------- DISPLAY DEPARTMENT SPECIFIC QUESTION CATEGORIES AND QUESTIONS --------------------------------}}
 
                     @foreach ($department_survey_questions as $question_category)
+                    {{-- {{ dd((int)$question_category->department->pluck('id')[0]) }} --}}
                         
-                    @if ($question_category->pivot->department_id == (int)$selected_department_id)
+                    @if ((int)$question_category->department->pluck('id')[0] == (int)$selected_department_id)
                         {{-- {{ dd($question_category->pivot->department_id == (int)$selected_department_id) }} --}}
                         @php $counter = 1; @endphp
                         
@@ -96,26 +96,25 @@
                                             <p>{{ $survey_question->question }}</p>
                                             <p>Ratings!</p>
                                             <div class="">
-                                                <div class="mb-2">
-                                                    <input type="radio" name="mp_punctuality_rating" id="exceptional" value="5">
-                                                    <label class="btn btn-primary" for="exceptional">5 - Exceptional</label>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <input type="radio" name="mp_punctuality_rating" id="exceeds" value="4">
-                                                    <label class="btn btn-primary" for="exceeds">4 - Exceeds Expectations</label>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <input type="radio" name="mp_punctuality_rating" id="meets" value="3">
-                                                    <label class="btn btn-primary" for="meets">3 - Meets Expectations</label>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <input type="radio" name="mp_punctuality_rating" id="below" value="2">
-                                                    <label class="btn btn-primary" for="below">2 - Below Expectations</label>
-                                                </div>
-                                                <div class="">
-                                                    <input type="radio" name="mp_punctuality_rating" id="improve" value="1">
-                                                    <label class="btn btn-primary" for="improve">1 - Needs Improvement</label>
-                                                </div>
+                                                @foreach ($department_users as $user)
+                                                    <div class="mb-2">
+                                                        <h4 class="btn btn-primary"> {{ $user->first_name }} </h4>
+
+                                                        @for ($i = 5; $i >= 1; $i--)
+                                                            <input type="radio" 
+                                                                name="ratings[{{ $survey_question->id }}][{{ $user->id }}]" 
+                                                                value="{{ $i }}">
+                                                            <label>
+                                                                @if($i == 5) Exceptional
+                                                                @elseif($i == 4) Exceeds Expectations
+                                                                @elseif($i == 3) Meets Expectations
+                                                                @elseif($i == 2) Below Expectations
+                                                                @else Needs Improvement
+                                                                @endif
+                                                            </label>
+                                                        @endfor
+                                                    </div>
+                                                @endforeach
                                             </div>
                                             <hr>
                                         </div>
@@ -143,26 +142,25 @@
                                             <p>{{ $survey_question->question }}</p>
                                             <p>Ratings!</p>
                                             <div class="">
-                                                <div class="mb-2">
-                                                    <input type="radio" name="mp_punctuality_rating" id="exceptional" value="5">
-                                                    <label class="btn btn-primary" for="exceptional">5 - Exceptional</label>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <input type="radio" name="mp_punctuality_rating" id="exceeds" value="4">
-                                                    <label class="btn btn-primary" for="exceeds">4 - Exceeds Expectations</label>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <input type="radio" name="mp_punctuality_rating" id="meets" value="3">
-                                                    <label class="btn btn-primary" for="meets">3 - Meets Expectations</label>
-                                                </div>
-                                                <div class="mb-2">
-                                                    <input type="radio" name="mp_punctuality_rating" id="below" value="2">
-                                                    <label class="btn btn-primary" for="below">2 - Below Expectations</label>
-                                                </div>
-                                                <div class="">
-                                                    <input type="radio" name="mp_punctuality_rating" id="improve" value="1">
-                                                    <label class="btn btn-primary" for="improve">1 - Needs Improvement</label>
-                                                </div>
+                                                @foreach ($department_users as $user)
+                                                    <div class="mb-2">
+                                                        <h4 class="btn btn-primary"> {{ $user->first_name }} </h4>
+
+                                                        @for ($i = 5; $i >= 1; $i--)
+                                                            <input type="radio" 
+                                                                name="ratings[{{ $survey_question->id }}][{{ $user->id }}]" 
+                                                                value="{{ $i }}">
+                                                            <label>
+                                                                @if($i == 5) Exceptional
+                                                                @elseif($i == 4) Exceeds Expectations
+                                                                @elseif($i == 3) Meets Expectations
+                                                                @elseif($i == 2) Below Expectations
+                                                                @else Needs Improvement
+                                                                @endif
+                                                            </label>
+                                                        @endfor
+                                                    </div>
+                                                @endforeach
                                             </div>
                                             <hr>
                                         </div>

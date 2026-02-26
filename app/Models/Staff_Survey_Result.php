@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Staff_Survey_Result extends Model
 {
+
+    protected $table = 'staff_survey_results';
+
     protected $fillable = [
         'survey_question_id',
         'user_id',
+        'department_id',
         'grading_1_count',
         'grading_2_count',
         'grading_3_count',
@@ -22,5 +26,9 @@ class Staff_Survey_Result extends Model
 
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    public function department(){
+        return $this->belongsTo(Department::class);
     }
 }

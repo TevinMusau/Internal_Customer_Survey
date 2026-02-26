@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('survey_question_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('department_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->string('grading_1_count');
             $table->string('grading_2_count');
             $table->string('grading_3_count');
