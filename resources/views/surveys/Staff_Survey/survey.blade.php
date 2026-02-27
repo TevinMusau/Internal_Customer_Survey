@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-12">
             <div class="col-12 text-center mb-4">
-                <h1 class="fw-bold">Managing Parter Survey</h1>
+                <h1 class="fw-bold">Staff Survey</h1>
             </div>
             
             <form class="form-group" action="{{ route('submit.staff.survey', ['department_id' => (int)$selected_department_id, 'user_id' => auth()->user()->id]) }}" method="POST">
@@ -45,7 +45,8 @@
                                                         @for ($i = 5; $i >= 1; $i--)
                                                             <input type="radio" 
                                                                 name="ratings[{{ $survey_question->id }}][{{ $user->id }}]" 
-                                                                value="{{ $i }}">
+                                                                value="{{ $i }}"
+                                                                {{ old("ratings.$survey_question->id.$user->id") == $i ? 'checked' : '' }}>
                                                             <label>
                                                                 @if($i == 5) Exceptional
                                                                 @elseif($i == 4) Exceeds Expectations
@@ -72,11 +73,11 @@
 
                     @foreach ($department_survey_questions as $question_category)
                     {{-- {{ dd((int)$question_category->department->pluck('id')[0]) }} --}}
-                        
+
                     @if ((int)$question_category->department->pluck('id')[0] == (int)$selected_department_id)
                         {{-- {{ dd($question_category->pivot->department_id == (int)$selected_department_id) }} --}}
                         @php $counter = 1; @endphp
-                        
+
                         @foreach ($question_category->survey_question as $survey_question)
                             @if ($survey_question->appears_in == 1)
                                 @if ($counter == 1)
@@ -103,7 +104,8 @@
                                                         @for ($i = 5; $i >= 1; $i--)
                                                             <input type="radio" 
                                                                 name="ratings[{{ $survey_question->id }}][{{ $user->id }}]" 
-                                                                value="{{ $i }}">
+                                                                value="{{ $i }}"
+                                                                {{ old("ratings.$survey_question->id.$user->id") == $i ? 'checked' : '' }}>
                                                             <label>
                                                                 @if($i == 5) Exceptional
                                                                 @elseif($i == 4) Exceeds Expectations
@@ -149,7 +151,8 @@
                                                         @for ($i = 5; $i >= 1; $i--)
                                                             <input type="radio" 
                                                                 name="ratings[{{ $survey_question->id }}][{{ $user->id }}]" 
-                                                                value="{{ $i }}">
+                                                                value="{{ $i }}"
+                                                                {{ old("ratings.$survey_question->id.$user->id") == $i ? 'checked' : '' }}>
                                                             <label>
                                                                 @if($i == 5) Exceptional
                                                                 @elseif($i == 4) Exceeds Expectations

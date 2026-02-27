@@ -6,7 +6,7 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="mt-5">
+        <div class="mt-3">
             <!-- Here, we print out the errors 
               -- this first section prints out errors due to form validation (the validate function in Auth Manager)
               -- they are many, so we use a foreach loop to print each one of them out
@@ -50,6 +50,11 @@
             @endif
         </div>
         <div class="col-12">
+
+            <div class="text-center mb-5">
+                <h1 class="fw-bold">Staff Survey</h1>
+            </div>
+            
             <h4>Select Department</h4>
 
             <form action="{{ route('display.staff.survey', ['user_id' => auth()->user()->id]) }}" method="POST">

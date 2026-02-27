@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Department;
 use App\Models\QuestionCategory;
-use Illuminate\Support\Facades\DB;
+use App\Models\Staff_Survey_Department_Completed;
 
 class SurveysController extends Controller
 {
@@ -76,10 +76,32 @@ class SurveysController extends Controller
         // get the user's id
         $user = User::find($id);
 
-        // to select a department page
+        // get all departments
         $departments = Department::all();
 
-        return view('surveys.Staff_Survey.selectdepartment', compact('departments'));
+        // check if the user has completed survey for some departments
+        $department_surveys_completed_by_user = Staff_Survey_Department_Completed::where('user_id', $id)->get();
+
+        // check if the user has completed survey for different department
+        if ($department_surveys_completed_by_user->count() > 0) {
+
+            $departments_complete = [];
+
+            // get ID's of departments the user has done the survey for
+            foreach ($department_surveys_completed_by_user as $completed_department){
+                array_push($departments_complete, $completed_department->department_id);
+            }
+
+            // display the departments, except those that the user has completed
+            $departments = $departments->except($departments_complete);
+
+            return view('surveys.Staff_Survey.selectdepartment', compact('departments'));
+
+        } else {
+
+            return view('surveys.Staff_Survey.selectdepartment', compact('departments'));
+        }
+
     }
 
     function displaySurveyPerDepartment($id, Request $request){
@@ -154,17 +176,6 @@ class SurveysController extends Controller
                     }
                 }
             }
-            foreach ($category->survey_question as $question) {
-
-                foreach ($department_users as $user) {
-
-                    if (!isset($request->ratings[$question->id][$user->id])) {
-                        return back()->withErrors([
-                            'ratings' => 'All users must be rated for every question.'
-                        ]);
-                    }
-                }
-            }
         }
 
 // ---------------------------- DEPARTMENT SPECIFIC QUESTIONS VALIDATION ------------------------------------
@@ -182,23 +193,11 @@ class SurveysController extends Controller
                     }
                 }
             }
-            foreach ($category->survey_question as $question) {
-
-                foreach ($department_users as $user) {
-
-                    if (!isset($request->ratings[$question->id][$user->id])) {
-                        return back()->withErrors([
-                            'ratings' => 'All users must be rated for every question.'
-                        ]);
-                    }
-                }
-            }
         }
-        
+
         foreach ($request->ratings as $question_id => $users) {
 
-
-            // Count new submission
+            // Prepare counters to count new submissions
             $newCounts = [
                 1 => 0,
                 2 => 0,
@@ -207,41 +206,52 @@ class SurveysController extends Controller
                 5 => 0,
             ];
 
+            // count ratings for question
             foreach ($users as $userId => $rating) {
-            $newCounts[$rating]++;
+
+                // count the ratings
+                $newCounts[$rating]++;
+
+                // Check if result exists for this question + department
+                $existing = Staff_Survey_Result::where('survey_question_id', $question_id)
+                                                ->where('user_id', $userId)
+                                                ->first();
+
+                if ($existing) {
+                    // Add new counts to existing counts
+                    $existing->grading_1_count += $newCounts[1];
+                    $existing->grading_2_count += $newCounts[2];
+                    $existing->grading_3_count += $newCounts[3];
+                    $existing->grading_4_count += $newCounts[4];
+                    $existing->grading_5_count += $newCounts[5];
+
+                    $existing->save();
+
+                } else {
+                    // No previous result, create new
+                    Staff_Survey_Result::create([
+                        'survey_question_id' => $question_id,
+                        // save the rated user's ID
+                        'user_id' => $userId,
+                        'department_id' => $department_id,
+                        'grading_1_count' => $newCounts[1],
+                        'grading_2_count' => $newCounts[2],
+                        'grading_3_count' => $newCounts[3],
+                        'grading_4_count' => $newCounts[4],
+                        'grading_5_count' => $newCounts[5],
+                    ]);
+                }
+            }
         }
+        
+        // the user has now completed the survey for this department
+        // add this to the department table
+        Staff_Survey_Department_Completed::create([
+                        'user_id' => $user_id,
+                        'department_id' => $department_id,
+                        'date' => today()
+        ]);
 
-        // Check if result exists for this question + department
-        $existing = Staff_Survey_Result::where('survey_question_id', $question_id)
-                                        ->where('department_id', $department_id)
-                                        ->first();
-        }
-
-        if ($existing) {
-            // Add new counts to existing counts
-            $existing->grading_1_count += $newCounts[1];
-            $existing->grading_2_count += $newCounts[2];
-            $existing->grading_3_count += $newCounts[3];
-            $existing->grading_4_count += $newCounts[4];
-            $existing->grading_5_count += $newCounts[5];
-
-            $existing->save();
-
-        } else {
-            // No previous result, create new
-            Staff_Survey_Result::create([
-                'survey_question_id' => $question_id,
-                'user_id' => $user_id,
-                'department_id' => $department_id,
-                'grading_1_count' => $newCounts[1],
-                'grading_2_count' => $newCounts[2],
-                'grading_3_count' => $newCounts[3],
-                'grading_4_count' => $newCounts[4],
-                'grading_5_count' => $newCounts[5],
-            ]);
-        }
-
-        return redirect()->back()->with('success', 'Survey saved successfully.');
-
+        return redirect()->back()->with('success', 'You have successfully completed Staff Survey for the '.$department_selected->name. ' department!');
     }
 }
