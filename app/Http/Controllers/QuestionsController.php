@@ -28,6 +28,7 @@ class QuestionsController extends Controller
             'sub_category_name' => 'required',
             'sub_category_description' => 'required',
             'question' => 'required',
+            'scope' => 'required',
         ]);
 
         if ($request->question_dept_selection[0] == "all_depts") {
@@ -37,7 +38,19 @@ class QuestionsController extends Controller
             $data['question_category_id'] = $request->question_category;
             $data['question'] = $request->question;
             $data['rating_id'] = 1;
-            $data['appears_in'] = 0;
+
+            if ($request->scope == 'all_surveys'){
+                $data['appears_in'] = 0;
+            } else if ($request->scope == 'staff_survey') {
+                $data['appears_in'] = 1;
+            } else if ($request->scope == 'supervisor_survey') {
+                $data['appears_in'] = 2;
+            } else if ($request->scope == 'mp_survey') {
+                $data['appears_in'] = 3;
+            } else {
+                $data['appears_in'] = 0;
+            }
+
             $data['affects_all_departments'] = 1;
 
             $new_question = SurveyQuestion::create($data);
@@ -60,7 +73,19 @@ class QuestionsController extends Controller
             $data['question_category_id'] = $request->question_category;
             $data['question'] = $request->question;
             $data['rating_id'] = 1;
-            $data['appears_in'] = 0;
+            
+            if ($request->scope == 'all_surveys'){
+                $data['appears_in'] = 0;
+            } else if ($request->scope == 'staff_survey') {
+                $data['appears_in'] = 1;
+            } else if ($request->scope == 'supervisor_survey') {
+                $data['appears_in'] = 2;
+            } else if ($request->scope == 'mp_survey') {
+                $data['appears_in'] = 3;
+            } else {
+                $data['appears_in'] = 0;
+            }
+
             $data['affects_all_departments'] = 1;
 
             // This will be an array of checked values, or null if none

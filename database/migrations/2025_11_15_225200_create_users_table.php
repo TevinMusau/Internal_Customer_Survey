@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('level')->default('normalUser');
             $table->string('initials');
             $table->boolean('isSupervisor')->default('0');
+            $table->boolean('isManagingPartner')->default('0');
             $table->rememberToken();
             $table->timestamps();
         });

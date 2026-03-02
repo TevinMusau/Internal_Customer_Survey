@@ -48,10 +48,16 @@ class SurveysController extends Controller
         // get the user's id
         $user = User::find($id);
 
-        // get all question categories that appear in all departments only
-        $mp_question_categories = QuestionCategory::where('appears_in_all_departments', '1')->get();
+        //get the Managing partner
+        $managing_partner = User::where('isManagingPartner', 1)->first();
 
-        return view('surveys.Managing_Partner.survey', compact('mp_question_categories'));
+        // get all question categories common for all departments
+        $common_department_question_categories = QuestionCategory::where('appears_in_all_departments', 1)->get();
+
+        // get all question categories that appear in all departments only
+        $mp_question_categories = QuestionCategory::where('appears_in_all_departments', 1)->get();
+
+        return view('surveys.Managing_Partner.survey', compact('common_department_question_categories', 'managing_partner', 'mp_question_categories'));
     }
 
     function toStaffSurveyIntroPage($id){
@@ -131,7 +137,7 @@ class SurveysController extends Controller
         return view('surveys.Staff_Survey.survey', compact('selected_department_id', 'department_selected', 'department_users', 'department_survey_questions', 'common_department_question_categories'));
     }
 
-    function submit($user_id, $department_id, Request $request){
+    function submitStaffSurvey($user_id, $department_id, Request $request){
         // if user is not logged in, redirect to the login page
         if(!auth()->user()){
             return redirect('login')->with('warning', 'You Must First Login!');

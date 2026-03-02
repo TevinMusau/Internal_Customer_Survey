@@ -89,6 +89,15 @@
                     @endif
                     <label class="form-check-label" for="supervisor">Is this user a supervisor?</label>
                 </div>
+                <div class="form-check form-switch ms-3 mt-3 mb-4">
+                    @if ($user->isManagingPartner)
+                        <input class="form-check-input" type="checkbox" name="managing_partner" role="switch" id="managing_partner" checked>
+                    @else
+                        <input class="form-check-input" type="checkbox" name="managing_partner" role="switch" id="managing_partner">
+
+                    @endif
+                    <label class="form-check-label" for="managing_partner">Is this user the Managing Partner?</label>
+                </div>
                 
                 <h5 class="text-center fw-bolder mt-2"> Select the User's level 
                     <i class="bi bi-info-circle cursor-pointer text-primary h6" 

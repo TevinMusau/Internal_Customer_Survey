@@ -45,6 +45,11 @@ class EditUserController extends Controller
         } else {
             $user->isSupervisor = 0;
         }
+        if($request->input('managing_partner')){
+            $user->isManagingPartner = 1;
+        } else {
+            $user->isManagingPartner = 0;
+        }
         $user->level = $request->input('user_level');
 
         // check if the password fields are empty

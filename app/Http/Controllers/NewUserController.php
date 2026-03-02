@@ -63,6 +63,10 @@ class NewUserController extends Controller
             $data['isSupervisor'] = 1;
         }
 
+        if ($request->boolean('managing_partner')) {
+            $data['isManagingPartner'] = 1;
+        }
+
         // check the role assigned by the admin when creating the user
         $selectedLevel = $request->user_level;
 

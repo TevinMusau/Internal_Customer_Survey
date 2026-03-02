@@ -417,6 +417,28 @@
                                 <label for="rating_3">Rating 3</label> <br>
                             </div> --}}
 
+                            <p>This question will appear in which survey: </p>
+
+                            <div class="mb-4">
+                                <input type="radio" name="scope" id="scope" value="all_surveys">
+                                <label class="form-check-label" for="scope">All Surveys</label>
+                            </div>
+
+                            <div class="mb-4">
+                                <input type="radio" name="scope" id="scope" value="staff_survey">
+                                <label class="form-check-label" for="scope">Staff Survey</label>
+                            </div>
+
+                            <div class="mb-4">
+                                <input type="radio" name="scope" id="scope" value="mp_survey">
+                                <label class="form-check-label" for="scope">Managing Partner Survey</label>
+                            </div>
+
+                            <div class="mb-4">
+                                <input type="radio" name="scope" id="scope" value="supervisor_survey">
+                                <label class="form-check-label" for="scope">Supervisor Survey</label>
+                            </div>
+
                             <div class="fw-bold">
                                 <button class="btn btn-outline-success">Save!</button>
                             </div>
