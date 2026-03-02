@@ -58,7 +58,7 @@
             <h1 class="fw-bold">Managing Parter ({{ $managing_partner->first_name }} {{ $managing_partner->last_name }}) Survey</h1>
         </div>
 
-        <form class="form-group" action="#" method="POST">
+        <form class="form-group" action="{{ route('submit.managingpartner.survey', ['user_id' => auth()->user()->id]) }}" method="POST">
             @csrf
 
 {{--------------------- DISPLAY ALL THE COMMON SURVEY QUESTION CATEGORIES AND SURVEY QUESTIONS ---------------}}
@@ -89,9 +89,9 @@
                                         <h4 class="btn btn-primary"> {{ $managing_partner->first_name }} </h4>
                                         @for ($i = 5; $i >= 1; $i--)
                                             <input type="radio" 
-                                                name="ratings[{{ $survey_question->id }}][{{ $managing_partner->id }}]" 
+                                                name="ratings[{{ $survey_question->id }}]" 
                                                 value="{{ $i }}"
-                                                {{ old("ratings.$survey_question->id.$managing_partner->id") == $i ? 'checked' : '' }}>
+                                                {{-- {{ old("ratings.$survey_question->id.$managing_partner->id") == $i ? 'checked' : '' }}> --}}
                                             <label>
                                                 @if($i == 5) Exceptional
                                                 @elseif($i == 4) Exceeds Expectations
@@ -128,7 +128,7 @@
                                     </h2>
                                     @php $counter++; @endphp
                             @endif
-                            <div id="flush-collapse-{{ $question_category->id }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ $question_category->id }}" data-bs-parent="#accordionFlushExample">
+                                <div id="flush-collapse-{{ $question_category->id }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ $question_category->id }}" data-bs-parent="#accordionFlushExample">
                                     <div class="accordion-body">
                                         <p>{{ $survey_question->sub_category_name }}</p>
                                         <p>{{ $survey_question->sub_category_description }}</p>
@@ -140,9 +140,9 @@
 
                                                 @for ($i = 5; $i >= 1; $i--)
                                                     <input type="radio" 
-                                                        name="ratings[{{ $survey_question->id }}][{{ $managing_partner->id }}]" 
+                                                        name="ratings[{{ $survey_question->id }}]" 
                                                         value="{{ $i }}"
-                                                        {{ old("ratings.$survey_question->id.$managing_partner->id") == $i ? 'checked' : '' }}>
+                                                        {{-- {{ old(key: "ratings.$survey_question->id.$managing_partner->id") == $i ? 'checked' : '' }}> --}}
                                                     <label>
                                                         @if($i == 5) Exceptional
                                                         @elseif($i == 4) Exceeds Expectations
@@ -157,6 +157,7 @@
                                         <hr>
                                     </div>
                                 </div>
+                            </div>
                         @endif
                     @endforeach
 

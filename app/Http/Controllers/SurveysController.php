@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Completed_Managing_Partner_Survey;
+use App\Models\Managing_Partner_Survey_Result;
 use App\Models\Staff_Survey_Result;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -59,6 +61,100 @@ class SurveysController extends Controller
 
         return view('surveys.Managing_Partner.survey', compact('common_department_question_categories', 'managing_partner', 'mp_question_categories'));
     }
+
+    function submitManagingPartnerSurvey($user_id, Request $request){
+        // if user is not logged in, redirect to the login page
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // validate the input
+        $request->validate([
+            'ratings' => 'required|array', // ratings field must exist
+            'ratings.*' => 'required|min:1|max:5' // every user rating must exist, and must be between 1 and 5
+        ]);
+
+        // get all question categories common for all departments
+        $common_department_question_categories = QuestionCategory::where('appears_in_all_departments', 1)->get();
+
+        // get all question categories that appear in all departments only
+        $mp_question_categories = QuestionCategory::where('appears_in_all_departments', 1)->get();
+
+        // get the managing partner
+        $managing_partner = User::where('isManagingPartner', 1)->first();
+
+// ----------------------------------- COMMON QUESTIONS VALIDATION ----------------------------------------
+        
+        foreach ($common_department_question_categories as $category) {
+
+            foreach ($category->survey_question as $question) {
+
+                if($question->appears_in == 3) {
+
+                    if (!isset($request->ratings[$question->id])) {
+                        return back()->withErrors([
+                            'ratings' => 'Managing Partner must be rated for every question!'
+                        ]);
+                    }
+                }
+            }
+        }
+
+// ---------------------------- MANAGING PARTNER SPECIFIC QUESTIONS VALIDATION ------------------------------------
+        
+        foreach ($mp_question_categories as $category) {
+
+            foreach ($category->survey_question as $question) {
+
+                if ($question->appears_in == 3) {
+
+                    if (!isset($request->ratings[$question->id])) {
+                        return back()->withErrors([
+                            'ratings' => 'Managing Partner must be rated for every question.'
+                        ]);
+                    }
+                }
+            }
+        }
+
+        foreach ($request->ratings as $question_id => $rating) {
+
+        // dd($request->ratings);
+
+            // check if the MP rating for this question already exists
+            $existing = Managing_Partner_Survey_Result::where('survey_question_id', $question_id)->first();
+            
+            if ($existing){
+
+                // increment only the selected rating
+                $existing->increment("grading_{$rating}_count");
+
+            } else {
+
+                // create the new record
+                Managing_Partner_Survey_Result::create([
+                    'survey_question_id' => $question_id,
+                    'user_id' => $managing_partner->id,
+                    'grading_1_count' => $rating == 1 ? 1 : 0,
+                    'grading_2_count' => $rating == 2 ? 1 : 0,
+                    'grading_3_count' => $rating == 3 ? 1 : 0,
+                    'grading_4_count' => $rating == 4 ? 1 : 0,
+                    'grading_5_count' => $rating == 5 ? 1 : 0,
+                ]);
+            }
+        }
+
+        // user has now completed the Managing Partner Survey
+        // add their record to the Completed Managing Partner Survey Table
+        Completed_Managing_Partner_Survey::create([
+            'user_id' => $user_id,
+            'date' => today(),
+        ]);
+
+        return redirect('/dashboard/'.auth()->user()->id)->with('success', 'You have successfully completed the Managing Partner Survey!');
+
+    }
+
 
     function toStaffSurveyIntroPage($id){
 

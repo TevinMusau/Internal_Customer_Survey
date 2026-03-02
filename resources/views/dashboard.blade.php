@@ -301,16 +301,19 @@
                                 </div>
                             </a>
                         </div>
-                        <div class="col-4">
-                            <a class="text-decoration-none" href="{{ route('mp.survey.intro', ['user_id' => auth()->user()->id]) }}" id="survey">
-                                <div class="card" style="width: 10rem">
-                                    <img src="{{ asset('Logo/MMAN_Logo.png') }}" class="card-img-top" alt="Card_Img">
-                                    <div class="card-body text-center">
-                                        <p class="card-text text-wrap fw-bold fst-italic" style="color: #BC8F8F"> Managing Partner Survey </p>
+                        @if (!$completed_managing_partner_survey)
+                            <div class="col-4">
+                                <a class="text-decoration-none" href="{{ route('mp.survey.intro', ['user_id' => auth()->user()->id]) }}" id="survey">
+                                    <div class="card" style="width: 10rem">
+                                        <img src="{{ asset('Logo/MMAN_Logo.png') }}" class="card-img-top" alt="Card_Img">
+                                        <div class="card-body text-center">
+                                            <p class="card-text text-wrap fw-bold fst-italic" style="color: #BC8F8F"> Managing Partner Survey </p>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
-                        </div>
+                                </a>
+                            </div>
+                        @endif
+                        
                         <div class="col-4">
                             <a class="text-decoration-none" href="#" id="survey">
                                 <div class="card" style="width: 11rem">

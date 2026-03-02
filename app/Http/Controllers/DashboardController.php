@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Completed_Managing_Partner_Survey;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Department;
@@ -31,7 +32,9 @@ class DashboardController extends Controller
         // get all admins
         $admins = User::with('departments')->where('level', '!=', 'normalUser')->get();
 
-        return view('dashboard', compact('users', 'admins', 'departments', 'question_categories'));
+        $completed_managing_partner_survey = Completed_Managing_Partner_Survey::where('user_id', $id)->first();
+
+        return view('dashboard', compact('users', 'admins', 'departments', 'question_categories', 'completed_managing_partner_survey'));
     }
 
     function newUserPage($id) {

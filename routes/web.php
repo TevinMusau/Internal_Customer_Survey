@@ -42,6 +42,7 @@ Route::get('/dashboard/{user_id}/surveys/managing-partner-survey/ratings_explain
 
 Route::get('/dashboard/{user_id}/surveys/managing-partner-survey/survey', [SurveysController::class, 'managingPartnerSurvey'])->name('mp.survey');
 Route::post('/dashboard/{user_id}/surveys/managing-partner-survey/survey', [SurveysController::class, 'managingPartnerSurvey'])->name('mp.survey.post');
+Route::post('/dashboard/{user_id}/surveys/managing-partner-survey/submit', [SurveysController::class, 'submitManagingPartnerSurvey'])->name('submit.managingpartner.survey');
 
 // Staff Survey
 Route::get('/dashboard/{user_id}/surveys/staff-survey', [SurveysController::class, 'toStaffSurveyIntroPage'])->name('staffsurveypage.intro');
