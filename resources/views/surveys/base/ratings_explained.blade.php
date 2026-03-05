@@ -47,7 +47,7 @@
                 </a>
 
             @elseif ((str_contains(url()->current(), 'supervisor')))
-                <a class="text-decoration-none" href="#">
+                <a class="text-decoration-none" href="{{ route('supervisor.survey.supervisors', ['user_id' => auth()->user()->id]) }}">
                     <button class="btn btn-outline-info p-2 mt-1 text-center">Let's Get Started!</button>
                 </a>
 

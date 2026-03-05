@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Supervisor_Survey_Result extends Model
 {
+    protected $table = 'supervisor_survey_results';
     protected $fillable = [
         'survey_question_id',
         'user_id',

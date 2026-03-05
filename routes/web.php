@@ -51,6 +51,13 @@ Route::get('/dashboard/{user_id}/surveys/staff-survey/select_dept', [SurveysCont
 Route::post('/dashboard/{user_id}/surveys/staff-survey/select_dept', [SurveysController::class, 'displaySurveyPerDepartment'])->name('display.staff.survey');
 Route::post('/dashboard/{user_id}/{department_id}/surveys/staff-survey/submit', [SurveysController::class, 'submitStaffSurvey'])->name('submit.staff.survey');
 
+// Supervisor Survey
+Route::get('/dashboard/{user_id}/surveys/supervisor-survey', [SurveysController::class, 'toSupervisorSurveyIntroPage'])->name('supervisorsurveypage.intro');
+Route::get('/dashboard/{user_id}/surveys/supervisor-survey/ratings_explained', [SurveysController::class, 'ratingsExplained'])->name('supervisor.survey.ratings_explained');
+Route::get('/dashboard/{user_id}/surveys/supervisor-survey/select_supervisor', [SurveysController::class, 'supervisorSurveySelectSupervisor'])->name('supervisor.survey.supervisors');
+Route::post('/dashboard/{user_id}/surveys/supervisor-survey/select_supervisor', [SurveysController::class, 'displaySupervisorSurvey'])->name('display.supervisor.survey');
+Route::post('/dashboard/{user_id}/{supervisor_id}/surveys/supervisor-survey/submit', [SurveysController::class, 'submitSupervisorSurvey'])->name('submit.supervisor.survey');
+
 
 Route::post('/dashboard/{user_id}/q_category/create', [QuestionCategoryController::class, 'store'])->name('create.category');
 Route::post('/dashboard/{user_id}/survey_question/create', [QuestionsController::class, 'store'])->name('create.question');

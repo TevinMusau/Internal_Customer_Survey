@@ -314,16 +314,18 @@
                             </div>
                         @endif
                         
-                        <div class="col-4">
-                            <a class="text-decoration-none" href="#" id="survey">
-                                <div class="card" style="width: 11rem">
-                                    <img src="{{ asset('Logo/MMAN_Logo.png') }}" class="card-img-top" alt="Card_Img">
-                                    <div class="card-body text-center">
-                                        <p class="card-text text-wrap fw-bold fst-italic" style="color: #BC8F8F"> Supervisor<br/> Survey </p>
+                        @if (!$completed_supervisor_survey)
+                            <div class="col-4">
+                                <a class="text-decoration-none" href="{{ route('supervisorsurveypage.intro', ['user_id' => auth()->user()->id]) }}" id="survey">
+                                    <div class="card" style="width: 11rem">
+                                        <img src="{{ asset('Logo/MMAN_Logo.png') }}" class="card-img-top" alt="Card_Img">
+                                        <div class="card-body text-center">
+                                            <p class="card-text text-wrap fw-bold fst-italic" style="color: #BC8F8F"> Supervisor<br/> Survey </p>
+                                        </div>
                                     </div>
-                                </div>
-                            </a>
-                        </div>
+                                </a>
+                            </div>
+                        @endif
                     </div>
                     
                 </div>

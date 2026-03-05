@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Completed_Managing_Partner_Survey;
+use App\Models\Completed_Supervisor_Survey;
 use App\Models\Managing_Partner_Survey_Result;
 use App\Models\Staff_Survey_Result;
+use App\Models\Supervisor_Survey_Result;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Department;
@@ -355,5 +357,122 @@ class SurveysController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'You have successfully completed Staff Survey for the '.$department_selected->name. ' department!');
+    }
+
+    function toSupervisorSurveyIntroPage($user_id){
+        // if user is not logged in, redirect to the login page
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // get the user's id
+        $user = User::find($user_id);
+
+        return view('surveys.Supervisor_Survey.intro');
+    }
+
+    function supervisorSurveySelectSupervisor($user_id){
+        // if user is not logged in, redirect to the login page
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // get all supervisors
+        $supervisors = User::where('isSupervisor', 1)->get();
+
+        return view('surveys.Supervisor_Survey.selectsupervisor', compact('supervisors'));
+
+    }
+
+    function displaySupervisorSurvey($user_id, Request $request){
+        // if user is not logged in, redirect to the login page
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // validate the supervisors form
+        $request->validate([
+            'supervisor' => 'required',
+        ]);
+
+        // get the selected supervisor
+        $selected_supervisor = User::find($request->supervisor);
+
+        // get supervisor survey questions
+        $supervisor_question_categories = QuestionCategory::where('appears_in_all_departments', 1)->get();
+
+        return view('surveys.Supervisor_Survey.survey', compact('supervisor_question_categories', 'selected_supervisor'));
+    }
+
+    function submitSupervisorSurvey($user_id, $supervisor_id, Request $request){
+        // if user is not logged in, redirect to the login page
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // validate the input
+        $request->validate([
+            'ratings' => 'required|array', // ratings field must exist
+            'ratings.*' => 'required|min:1|max:5' // every user rating must exist, and must be between 1 and 5
+        ]);
+
+        // get all question categories common for all departments
+        $supervisor_question_categories = QuestionCategory::where('appears_in_all_departments', 1)->get();
+
+        // get the supervisor
+        $supervisor = User::find($supervisor_id);
+
+        foreach ($supervisor_question_categories as $category) {
+
+            foreach ($category->survey_question as $question) {
+
+                if ($question->appears_in == 2) {
+
+                    if (!isset($request->ratings[$question->id])) {
+                        return back()->withErrors([
+                            'ratings' => 'Supervisor must be rated for every question.'
+                        ]);
+                    }
+                }
+            }
+        }
+
+        foreach ($request->ratings as $question_id => $rating) {
+
+        // dd($request->ratings);
+
+            // check if the supervisor's rating for each question already exists
+            $existing = Supervisor_Survey_Result::where('survey_question_id', $question_id)
+                                                    ->where('user_id', $supervisor_id)
+                                                    ->first();
+            
+            if ($existing){
+
+                // increment only the selected rating
+                $existing->increment("grading_{$rating}_count");
+
+            } else {
+
+                // create the new record
+                Supervisor_Survey_Result::create([
+                    'survey_question_id' => $question_id,
+                    'user_id' => $supervisor->id,
+                    'grading_1_count' => $rating == 1 ? 1 : 0,
+                    'grading_2_count' => $rating == 2 ? 1 : 0,
+                    'grading_3_count' => $rating == 3 ? 1 : 0,
+                    'grading_4_count' => $rating == 4 ? 1 : 0,
+                    'grading_5_count' => $rating == 5 ? 1 : 0,
+                ]);
+            }
+        }
+
+        // user has now completed the Supervisor Survey
+        // add their record to the Completed Supervisor Survey Table
+        Completed_Supervisor_Survey::create([
+            'user_id' => $user_id,
+            'date' => today(),
+        ]);
+
+        return redirect('/dashboard/'.auth()->user()->id)->with('success', 'You have successfully completed the Supervisor Survey!');
     }
 }
