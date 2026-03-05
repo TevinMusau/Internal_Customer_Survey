@@ -15,7 +15,6 @@ use App\Models\Staff_Survey_Department_Completed;
 
 class SurveysController extends Controller
 {
-    private $rating;
     // to Managing Partner Survey Page
     function introToManagingPartnerSurvey($id){
 
@@ -181,6 +180,9 @@ class SurveysController extends Controller
 
             return view('surveys.Staff_Survey.selectdepartment', compact('departments'));
 
+        } else if ($departments->count() == $department_surveys_completed_by_user->count()) {
+            $departments = "Complete!";
+
         } else {
 
             return view('surveys.Staff_Survey.selectdepartment', compact('departments'));
@@ -251,12 +253,15 @@ class SurveysController extends Controller
 
             foreach ($category->survey_question as $question) {
 
-                foreach ($department_users as $user) {
+                if ($question->appears_in == 0){
 
-                    if (!isset($request->ratings[$question->id][$user->id])) {
-                        return back()->withErrors([
-                            'ratings' => 'All users must be rated for every question.'
-                        ]);
+                    foreach ($department_users as $user) {
+
+                        if (!isset($request->ratings[$question->id][$user->id])) {
+                            return back()->withErrors([
+                                'ratings' => 'All users must be rated for every question!!'
+                            ]);
+                        }
                     }
                 }
             }
