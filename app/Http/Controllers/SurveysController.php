@@ -76,31 +76,12 @@ class SurveysController extends Controller
             'ratings.*' => 'required|min:1|max:5' // every user rating must exist, and must be between 1 and 5
         ]);
 
-        // get all question categories common for all departments
-        $common_department_question_categories = QuestionCategory::where('appears_in_all_departments', 1)->get();
-
         // get all question categories that appear in all departments only
         $mp_question_categories = QuestionCategory::where('appears_in_all_departments', 1)->get();
 
         // get the managing partner
         $managing_partner = User::where('isManagingPartner', 1)->first();
 
-// ----------------------------------- COMMON QUESTIONS VALIDATION ----------------------------------------
-        
-        foreach ($common_department_question_categories as $category) {
-
-            foreach ($category->survey_question as $question) {
-
-                if($question->appears_in == 3) {
-
-                    if (!isset($request->ratings[$question->id])) {
-                        return back()->withErrors([
-                            'ratings' => 'Managing Partner must be rated for every question!'
-                        ]);
-                    }
-                }
-            }
-        }
 
 // ---------------------------- MANAGING PARTNER SPECIFIC QUESTIONS VALIDATION ------------------------------------
         
@@ -154,7 +135,6 @@ class SurveysController extends Controller
         ]);
 
         return redirect('/dashboard/'.auth()->user()->id)->with('success', 'You have successfully completed the Managing Partner Survey!');
-
     }
 
 
