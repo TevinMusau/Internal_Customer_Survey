@@ -291,7 +291,7 @@
 
                 <div class="container-fluid w-75">
                     <div class="row justify-content-center">
-                        @if($departments != "Complete")
+                        @if(!$completed_staff_survey)
                         <div class="col-4">
                             <a class="text-decoration-none" href="{{ route('staffsurveypage.intro', ['user_id' => auth()->user()->id]) }}" id="survey">
                                 <div class="card" style="width: 11rem">

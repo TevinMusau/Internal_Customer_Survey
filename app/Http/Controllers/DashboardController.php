@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Completed_Managing_Partner_Survey;
 use App\Models\Completed_Supervisor_Survey;
+use App\Models\Staff_Survey_Department_Completed;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Department;
@@ -37,7 +38,19 @@ class DashboardController extends Controller
 
         $completed_supervisor_survey = Completed_Supervisor_Survey::where('user_id', $id)->first();
 
-        return view('dashboard', compact('users', 'admins', 'departments', 'question_categories', 'completed_managing_partner_survey', 'completed_supervisor_survey'));
+        // check if the user has completed the staff survey
+        // check if the user has completed survey for some departments
+        $department_surveys_completed_by_user = Staff_Survey_Department_Completed::where('user_id', $id)->get();
+
+        // check if the user has done surveys for all departments
+        if ($departments->count() != $department_surveys_completed_by_user->count()){
+            $completed_staff_survey = false;
+        } else {
+            $completed_staff_survey = true;
+        }
+
+
+        return view('dashboard', compact('users', 'admins', 'departments', 'question_categories', 'completed_managing_partner_survey', 'completed_supervisor_survey', 'completed_staff_survey'));
     }
 
     function newUserPage($id) {

@@ -172,6 +172,32 @@
                             @endif
                         @endforeach
                     @endforeach
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-toggle="collapse" data-bs-target="#flush-collapse" aria-expanded="false" aria-controls="flush-collapse">
+                                Comments
+                            </button>
+                        </h2>
+                        <div id="flush-collapse" class="accordion-collapse collapse" aria-labelledby="heading" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">
+                                <p>Write a comment for each user in this department:</p>
+                                
+                                <div class="">
+                                    @foreach ($department_users as $user)
+                                        <div class="mb-2">
+                                            <h4 class="btn btn-primary"> {{ $user->first_name }} </h4>
+
+                                            <div class="mb-3">
+                                                <label for="staff_comment" class="form-label">Comment Area</label>
+                                                <textarea class="form-control" id="staff_comment" rows="3" name="staff_comment[{{ $user->id }}]"></textarea>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
 {{-------------------------------------- END OF DEPARTMENT SPECIFIC QUESTIONS -----------------------------}}

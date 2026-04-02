@@ -10,6 +10,7 @@ use App\Models\Supervisor_Survey_Result;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Department;
+use App\Models\Comment;
 use App\Models\QuestionCategory;
 use App\Models\Staff_Survey_Department_Completed;
 
@@ -166,7 +167,7 @@ class SurveysController extends Controller
         $department_surveys_completed_by_user = Staff_Survey_Department_Completed::where('user_id', $id)->get();
 
         // check if the user has completed survey for different department
-        if ($department_surveys_completed_by_user->count() > 0) {
+        if ($department_surveys_completed_by_user->count() != $departments->count()) {
 
             $departments_complete = [];
 
@@ -180,14 +181,10 @@ class SurveysController extends Controller
 
             return view('surveys.Staff_Survey.selectdepartment', compact('departments'));
 
-        } else if ($departments->count() == $department_surveys_completed_by_user->count()) {
-            $departments = "Complete!";
-
         } else {
 
-            return view('surveys.Staff_Survey.selectdepartment', compact('departments'));
+            return redirect('/dashboard/'.$id)->with('success', 'You have successfully completed the Staff Survey!');
         }
-
     }
 
     function displaySurveyPerDepartment($id, Request $request){
@@ -227,7 +224,9 @@ class SurveysController extends Controller
         $request->validate([
             'ratings' => 'required|array', // ratings field must exist
             'ratings.*' => 'required|array', // each question must have an array of users
-            'ratings.*.*' => 'required|min:1|max:5' // every user rating must exist, and must be between 1 and 5
+            'ratings.*.*' => 'required|min:1|max:5', // every user rating must exist, and must be between 1 and 5 
+            'staff_comment' => 'required|array', // comment field must exist
+            'staff_comment.*' => 'required|min:3|max:1000' // each comment about the user must exist, and must be a max of 1000 characters long
         ]);
 
         // get all question categories common for all departments
@@ -246,6 +245,19 @@ class SurveysController extends Controller
          * Question Categories and Survey questions can either be common or specific to a department
          * So when doing validation, we must account for this
          */
+
+
+// ------------------------------------------- COMMENTS VALIDATION ----------------------------------------
+
+        foreach ($department_users as $user) {
+
+            if (empty($request->staff_comment[$user->id])){
+                
+                return back()->withErrors([
+                    'staff_comment' => 'You must add commets for all users!'
+                ]);
+            }
+        }
 
 // ----------------------------------- COMMON QUESTIONS VALIDATION ----------------------------------------
         
@@ -332,13 +344,23 @@ class SurveysController extends Controller
                 }
             }
         }
+
+        // save the comment added for the user
+        Comment::create([
+            'comment_by' => $user_id,
+            'comment_about' => $userId,
+            'title' => 'Staff Survey',
+            'comment' => $request->staff_comment[$userId],
+            'date' => today(),
+            'comment_type' => 'End_of_Survey'
+        ]);
         
         // the user has now completed the survey for this department
         // add this to the department table
         Staff_Survey_Department_Completed::create([
-                        'user_id' => $user_id,
-                        'department_id' => $department_id,
-                        'date' => today()
+            'user_id' => $user_id,
+            'department_id' => $department_id,
+            'date' => today()
         ]);
 
         return redirect()->back()->with('success', 'You have successfully completed Staff Survey for the '.$department_selected->name. ' department!');
