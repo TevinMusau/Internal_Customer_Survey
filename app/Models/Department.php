@@ -17,14 +17,13 @@ class Department extends Model
 
     // Relationship to Survey Questions Table (Many-To-Many)
     public function survey_question(){
-        return $this->belongsToMany(SurveyQuestion::class, 'department_survey_question')->withTimestamps();
+        return $this->belongsToMany(SurveyQuestion::class, 'department_survey_questions')->withTimestamps();
     }
 
-    // Relationship to Question Category Table (One-To-Many)
+    // Relationship to Question Category Table (Many-To-Many)
     public function question_category() {
         return $this->belongsToMany(QuestionCategory::class, 'department_question_category')->withTimestamps();
     }
-
 
     // Relationship to Departments Completed Table (One-To-One)
     public function departments_completed(){

@@ -35,6 +35,12 @@ Route::get('/dashboard/{admin_id}/{user_id}/edit-user', [EditUserController::cla
 Route::post('/dashboard/{admin_id}/{user_id}/edit-user', [EditUserController::class, 'editDetails'])->name('edit.user.post');
 
 
+// questions routes
+Route::get('/dashboard/{survey_question_id}/{user_id}/edit-question', [QuestionsController::class, 'toEditQuestionPage'])->name('edit.question');
+Route::post('/dashboard/{survey_question_id}/{user_id}/edit-question', [QuestionsController::class, 'editQuestionDetails'])->name('edit.user.post');
+Route::get('/dashboard/{survey_question_id}/{user_id}/delete-question', [QuestionsController::class, 'deleteQuestion'])->name('delete.question');
+
+
 // -------------------------- Surveys ----------------------
 // Managing Partner Survey
 Route::get('/dashboard/{user_id}/surveys/managing-partner-survey', [SurveysController::class, 'introToManagingPartnerSurvey'])->name('mp.survey.intro');

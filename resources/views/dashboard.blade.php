@@ -348,6 +348,78 @@
                     </div>
                 </div>
 
+                <div class="mt-3">
+                    <table class="table table-responsive table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>Question Category</th>
+                                <th>Sub Category Name</th>
+                                <th>Sub Category Description</th>
+                                <th>Question</th>
+                                <th>Appears In (Surveys)</th>
+                                <th>Departments Affected</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php $counter = 1; @endphp
+                            @foreach ($all_questions as $category => $rows)
+                                @foreach ($rows as $index => $row)
+                                    <tr>
+                                        <td>{{ $counter++ }}</td>
+                                        @if ($index === 0)
+                                            <td rowspan="{{ count($rows) }}">{{ $category }}</td>
+                                        @endif
+                                        <td>{{ $row->sub_category_name }}</td>
+                                        <td>{{ $row->description }}</td>
+                                        <td>{{ $row->question }}</td>
+                                        <td>
+                                            {{ match($row->appears_in){
+                                                    0 => "All Surveys",
+                                                    1 => "Staff Survey",
+                                                    2 => "Supervisor Survey",
+                                                    3 => "Managing Partner Survey"
+                                                } 
+                                            }}
+                                        </td>
+                                        <td>
+                                            @if ($row->departments_affected == 1)
+                                                <span class="badge bg-success">All Departments</span>
+                                            @else
+                                                @foreach ($row->survey_question as $sq)
+                                                    @if ($sq->id == $row->survey_question_id)
+                                                        @foreach ($sq->department as $department)
+                                                            <span class="badge bg-info">{{ $department->name }}</span>
+                                                        @endforeach
+                                                    @endif
+                                                @endforeach
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <span>
+                                                <a class="text-decoration-none" href="{{ route('edit.question', ['survey_question_id' => $row->survey_question_id, 'user_id' => auth()->user()->id]) }}">
+                                                    <button class="btn btn-outline-primary" title="Edit Question">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </button>
+                                                </a>
+                                            
+                                                <a class="text-decoration-none" 
+                                                    onclick="if (!window.confirm('This action is irreversible. Are you sure you want to proceed?')) return false" 
+                                                    href="{{ route('delete.question', ['survey_question_id' => $row->survey_question_id, 'user_id' => auth()->user()->id]) }}">
+                                                    <button class="form-control btn btn-outline-danger mb-3" title="Delete Question">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
+                                                </a>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
 {{------------------------------------------------- MAKE NEW CATEGORY ----------------------------------------}}
 
                 <div class="p-1" id="new_category" style="display: none">

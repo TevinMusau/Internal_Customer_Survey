@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Completed_Managing_Partner_Survey;
 use App\Models\Completed_Supervisor_Survey;
 use App\Models\Staff_Survey_Department_Completed;
+use App\Models\SurveyQuestion;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Department;
 use App\Models\QuestionCategory;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -49,8 +51,26 @@ class DashboardController extends Controller
             $completed_staff_survey = true;
         }
 
+        
 
-        return view('dashboard', compact('users', 'admins', 'departments', 'question_categories', 'completed_managing_partner_survey', 'completed_supervisor_survey', 'completed_staff_survey'));
+        // get the all questions
+        $all_questions = QuestionCategory::with('survey_question.department')
+                                    ->join('survey_questions', 'question_categories.id', '=', 'survey_questions.question_category_id')
+                                    ->select(
+                                        'question_categories.id',
+                                        'survey_questions.id as survey_question_id',
+                                        'question_categories.category_name as question_category',
+                                        'survey_questions.sub_category_name',
+                                        'survey_questions.sub_category_description as description',
+                                        'survey_questions.question',
+                                        'survey_questions.appears_in as appears_in',
+                                        'survey_questions.affects_all_department as departments_affected',
+                                        'question_categories.appears_in_all_departments',
+                                    )
+                                    ->get()
+                                    ->groupBy('question_category');
+
+        return view('dashboard', compact('users', 'admins', 'departments', 'question_categories', 'completed_managing_partner_survey', 'completed_supervisor_survey', 'completed_staff_survey', 'all_questions'));
     }
 
     function newUserPage($id) {

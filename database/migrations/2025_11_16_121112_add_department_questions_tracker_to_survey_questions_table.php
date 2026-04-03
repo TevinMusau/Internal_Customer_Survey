@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('survey_questions', function (Blueprint $table) {
-            $table->boolean('affects_all_department')->default(0); // 0 - Does not affect all departments; 1 - Affects All Department
+            $table->boolean('affects_all_department')->default(1); // 0 - Does not affect all departments; 1 - Affects All Department
         });
     }
 

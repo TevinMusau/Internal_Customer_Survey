@@ -8,6 +8,7 @@ use App\Models\SurveyQuestion;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Department;
+use Illuminate\Support\Facades\DB;
 
 class QuestionsController extends Controller
 {
@@ -51,7 +52,7 @@ class QuestionsController extends Controller
                 $data['appears_in'] = 0;
             }
 
-            $data['affects_all_departments'] = 1;
+            $data['affects_all_department'] = 1;
 
             $new_question = SurveyQuestion::create($data);
 
@@ -86,7 +87,7 @@ class QuestionsController extends Controller
                 $data['appears_in'] = 0;
             }
 
-            $data['affects_all_departments'] = 1;
+            $data['affects_all_department'] = 0;
 
             // This will be an array of checked values, or null if none
             $selected_departments = $request->input('question_dept_selection', []);
@@ -99,5 +100,72 @@ class QuestionsController extends Controller
 
         }
 
+    }
+
+    function toEditQuestionPage($survey_question_id, $user_id){
+        
+        // if user is not logged in, redirect to the login page
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // get all question categories
+        $question_categories = QuestionCategory::all();
+
+        // get all departments
+        $departments = Department::all();
+        
+        // get details of survey question
+        $survey_question = SurveyQuestion::find($survey_question_id);
+
+        // get all departments linked to the survey question
+        $linkedDepartmentIds = $survey_question->department->pluck('id')->toArray();
+
+        // check if the list of departments selected is equal to the total number of departments
+        $allSelected = count($linkedDepartmentIds) === count($departments);
+
+        // redirect to the edit question details page
+        return view('editquestion', compact('question_categories', 'survey_question', 'departments', 'allSelected', 'linkedDepartmentIds'));
+    }
+
+    function editQuestionDetails(Request $request, $survey_question_id, $user_id){
+
+        // find the survey question
+        $survey_question = SurveyQuestion::find($survey_question_id);
+
+        // get all departments
+        $departments = Department::all();
+
+        // update the question
+        $survey_question->update([
+            'question_category_id'      => $request->input("question_category_id"),
+            'sub_category_name'         => $request->input("sub_category_name"),
+            'sub_category_description'  => $request->input("sub_category_description"),
+            'question'                  => $request->input("sub_category_question"),
+            'appears_in'                => $request->input("survey_question_survey_selection"),
+        ]);
+
+        // handle department sync
+        if (in_array(1, $request->survey_question_department_selection)) {
+            // "All Departments" selected — sync all
+            $survey_question->department()->sync($departments->pluck('id')->toArray());
+            $survey_question->update(['affects_all_department' => 1]);
+        } else {
+            // sync only selected departments
+            $survey_question->department()->sync($request->survey_question_department_selection);
+            $survey_question->update(['affects_all_department' => 0]);
+        }
+
+        return redirect('/dashboard/'.$user_id)->with('success', 'Question Details Successfully Updated');
+    }
+
+    function deleteQuestion($survey_question_id, $user_id){
+        // get the survey question
+        $survey_question = SurveyQuestion::findOrFail($survey_question_id);
+
+        // delete it
+        $survey_question->delete();
+
+        return redirect('/dashboard/'.$user_id)->with('success', 'Question Deleted Successfully');
     }
 }

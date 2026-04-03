@@ -14,6 +14,7 @@ class SurveyQuestion extends Model
         'question',
         'rating_id',
         'appears_in',
+        'affects_all_department'
     ];
 
     // Relationship to Staff Survey Result Table (One-To-Many)
