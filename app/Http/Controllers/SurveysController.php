@@ -73,7 +73,8 @@ class SurveysController extends Controller
         // validate the input
         $request->validate([
             'ratings' => 'required|array', // ratings field must exist
-            'ratings.*' => 'required|min:1|max:5' // every user rating must exist, and must be between 1 and 5
+            'ratings.*' => 'required|min:1|max:5', // every user rating must exist, and must be between 1 and 5
+            'managing_partner_comment' => 'required|min:3|max:1000'
         ]);
 
         // get all question categories that appear in all departments only
@@ -82,6 +83,15 @@ class SurveysController extends Controller
         // get the managing partner
         $managing_partner = User::where('isManagingPartner', 1)->first();
 
+
+// ---------------------------- MANAGING PARTNER COMMENT VALIDATION ------------------------------------
+
+        if (empty($request->managing_partner_comment)){
+                
+                return back()->withErrors([
+                    'managing_partner_comment' => 'Comment is Required!'
+                ]);
+            }
 
 // ---------------------------- MANAGING PARTNER SPECIFIC QUESTIONS VALIDATION ------------------------------------
         
@@ -126,6 +136,16 @@ class SurveysController extends Controller
                 ]);
             }
         }
+
+        // save the comment added for the Managing Partner
+        Comment::create([
+            'comment_by' => $user_id,
+            'comment_about' => $managing_partner->id,
+            'title' => 'Managing Partner Survey',
+            'comment' => $request->managing_partner_comment,
+            'date' => today(),
+            'comment_type' => 'End_of_Survey'
+        ]);
 
         // user has now completed the Managing Partner Survey
         // add their record to the Completed Managing Partner Survey Table
@@ -420,7 +440,8 @@ class SurveysController extends Controller
         // validate the input
         $request->validate([
             'ratings' => 'required|array', // ratings field must exist
-            'ratings.*' => 'required|min:1|max:5' // every user rating must exist, and must be between 1 and 5
+            'ratings.*' => 'required|min:1|max:5', // every user rating must exist, and must be between 1 and 5
+            'supervisor_comment' => 'required|min:3|max"1000',
         ]);
 
         // get all question categories common for all departments
@@ -428,6 +449,13 @@ class SurveysController extends Controller
 
         // get the supervisor
         $supervisor = User::find($supervisor_id);
+
+        if (empty($request->supervisor_comment)){
+                
+            return back()->withErrors([
+                'supervisor_comment' => 'You must add a comment for your supervisor!!'
+            ]);
+        }
 
         foreach ($supervisor_question_categories as $category) {
 
@@ -472,6 +500,16 @@ class SurveysController extends Controller
                 ]);
             }
         }
+
+        // save the comment added for the user
+        Comment::create([
+            'comment_by' => $user_id,
+            'comment_about' => $supervisor->id,
+            'title' => 'Supervisor Survey',
+            'comment' => $request->supervisor_comment,
+            'date' => today(),
+            'comment_type' => 'End_of_Survey'
+        ]);
 
         // user has now completed the Supervisor Survey
         // add their record to the Completed Supervisor Survey Table
