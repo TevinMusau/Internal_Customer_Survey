@@ -18,10 +18,10 @@ class Comment extends Model
     ];
 
     public function commentor(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'comment_by', 'id');
     }
 
     public function commentee(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'comment_about', 'id');
     }
 }

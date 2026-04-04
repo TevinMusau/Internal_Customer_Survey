@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title') Edit User Details @endsection
+@section('title') Edit Question Details @endsection
 
 @section('content')
 
@@ -35,7 +35,7 @@
                 @endif
             </div>
 
-            <form class="form-group" action="#" method="POST">
+            <form class="form-group" action="{{ route('edit.question.post', ['survey_question_id' => $survey_question->id, 'user_id' => auth()->user()->id]) }}" method="POST">
                 <!-- csrf is a security feature for laravel forms -->
                 @csrf
                 <div class="col-12 text-center p-3">

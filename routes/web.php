@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\QuestionCategoryController;
 use Illuminate\Support\Facades\Route;
@@ -37,8 +38,14 @@ Route::post('/dashboard/{admin_id}/{user_id}/edit-user', [EditUserController::cl
 
 // questions routes
 Route::get('/dashboard/{survey_question_id}/{user_id}/edit-question', [QuestionsController::class, 'toEditQuestionPage'])->name('edit.question');
-Route::post('/dashboard/{survey_question_id}/{user_id}/edit-question', [QuestionsController::class, 'editQuestionDetails'])->name('edit.user.post');
+Route::post('/dashboard/{survey_question_id}/{user_id}/edit-question', [QuestionsController::class, 'editQuestionDetails'])->name('edit.question.post');
 Route::get('/dashboard/{survey_question_id}/{user_id}/delete-question', [QuestionsController::class, 'deleteQuestion'])->name('delete.question');
+
+// comment routes
+Route::get('/dashboard/{comment_id}/{user_id}/edit-comment', [CommentsController::class, 'toEditCommentPage'])->name('edit.comment');
+Route::post('/dashboard/{comment_id}/{user_id}/edit-comment', [CommentsController::class, 'editCommentDetails'])->name('edit.comment.post');
+Route::get('/dashboard/{comment_id}/{user_id}/delete-comment', [CommentsController::class, 'deleteComment'])->name('delete.comment');
+
 
 
 // -------------------------- Surveys ----------------------

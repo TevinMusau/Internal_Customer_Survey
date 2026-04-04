@@ -10,7 +10,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Department;
 use App\Models\QuestionCategory;
-use Illuminate\Support\Facades\DB;
+use App\Models\Comment;
+
 
 class DashboardController extends Controller
 {
@@ -51,8 +52,6 @@ class DashboardController extends Controller
             $completed_staff_survey = true;
         }
 
-        
-
         // get the all questions
         $all_questions = QuestionCategory::with('survey_question.department')
                                     ->join('survey_questions', 'question_categories.id', '=', 'survey_questions.question_category_id')
@@ -70,7 +69,10 @@ class DashboardController extends Controller
                                     ->get()
                                     ->groupBy('question_category');
 
-        return view('dashboard', compact('users', 'admins', 'departments', 'question_categories', 'completed_managing_partner_survey', 'completed_supervisor_survey', 'completed_staff_survey', 'all_questions'));
+        // get all comments
+        $comments = Comment::with(['commentor', 'commentee'])->get();
+
+        return view('dashboard', compact('users', 'admins', 'departments', 'question_categories', 'completed_managing_partner_survey', 'completed_supervisor_survey', 'completed_staff_survey', 'all_questions', 'comments'));
     }
 
     function newUserPage($id) {

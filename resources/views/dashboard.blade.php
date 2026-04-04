@@ -563,7 +563,56 @@
                     <i>Comments</i>
                 </h3>
 
-                <p class="text-center">Display Comments Here</p>
+                <table class="table table-responsive table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Comment Title</th>
+                            <th>Comment</th>
+                            <th>Commented By</th>
+                            <th>Comment About</th>
+                            <th>Comment Type</th>
+                            <th>Creation Date</th>
+                            <th>Action</th>
+                        </tr>
+                        <tbody>
+                            @foreach ($comments as $comment)
+                                <tr>
+                                    <td> {{ $loop->iteration }} </td>
+                                    <td> {{ $comment->title }} </td>
+                                    <td> {{ $comment->comment }} </td>
+                                    <td> {{ $comment->commentor->initials }} </td>
+                                    <td> {{ $comment->commentee->initials }} </td>
+                                    <td> {{ $comment->comment_type }} </td>
+                                    <td> {{ $comment->created_at }} </td>
+                                    @if ($comment->comment_by == auth()->user()->id || auth()->user()->level == 'superAdmin' || auth()->user()->level == 'staffAdmin')
+                                        <td>
+                                            <span>
+                                                @if ($comment->comment_by == auth()->user()->id)
+                                                    <a class="text-decoration-none" href="{{ route('edit.comment', ['comment_id' => $comment->id, 'user_id' => auth()->user()->id]) }}">
+                                                        <button class="btn btn-outline-primary" title="Edit Comment">
+                                                            <i class="bi bi-pencil-square"></i>
+                                                        </button>
+                                                    </a>
+                                                @endif
+                                            
+                                                <a class="text-decoration-none" 
+                                                    onclick="if (!window.confirm('This action is irreversible. Are you sure you want to proceed?')) return false" 
+                                                    href="{{ route('delete.comment', ['comment_id' => $comment->id, 'user_id' => auth()->user()->id]) }}">
+                                                    <button class="form-control btn btn-outline-danger mb-3" title="Delete Comment">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
+                                                </a>
+                                            </span>
+                                        </td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                            
+                        </tbody>
+                    </thead>
+                </table>
+
 
             </div>
         </div>
@@ -902,7 +951,7 @@ document.querySelectorAll('.category-radio').forEach(radio => {
         launch_survey.style.display = 'none';
         notifications.style.display = 'none';
         survey_reports.style.display = 'none';
-        rejected.style.display = 'block';
+        comments.style.display = 'block';
     }
 </script>
 
