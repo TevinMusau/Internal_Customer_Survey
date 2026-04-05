@@ -46,6 +46,10 @@ Route::get('/dashboard/{comment_id}/{user_id}/edit-comment', [CommentsController
 Route::post('/dashboard/{comment_id}/{user_id}/edit-comment', [CommentsController::class, 'editCommentDetails'])->name('edit.comment.post');
 Route::get('/dashboard/{comment_id}/{user_id}/delete-comment', [CommentsController::class, 'deleteComment'])->name('delete.comment');
 
+// schedule survey routes
+Route::post('/dashboard/{user_id}/schedule-survey', [SurveysController::class, 'scheduleSurvey'])->name('schedule.survey');
+Route::post('/dashboard/{scheduled_survey_id}/{user_id}/edit-scheduled-survey', [SurveysController::class, 'editScheduledSurvey'])->name('edit.scheduled.survey');
+
 
 
 // -------------------------- Surveys ----------------------

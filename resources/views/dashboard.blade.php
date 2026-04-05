@@ -6,7 +6,7 @@
 
 <div class="container-fluid w-100 p-1">
     <div class="row justify-content-center">
-        <div class="mb-2 w-75">
+        <div class="mb-2 w-75 text-center">
             <!-- Here, we print out the errors 
             -- this first section prints out errors due to form validation (the validate function in Auth Manager)
             -- they are many, so we use a foreach loop to print each one of them out
@@ -45,7 +45,7 @@
 
             @if(session()->has('success'))
                 <div class="alert alert-success">
-                    {{ session('success') }}
+                    {!!  session('success') !!}
                 </div>
             @endif
         </div>
@@ -528,13 +528,87 @@
             </div>
 
 {{-- --------------------------------------- LAUNCH SURVEY SECTION ----------------------------------------- --}}
-            <div id="launch_survey" class="row" style="display: none">
+            <div id="launch_survey" class="row text-center" style="display: none">
                 <h3 class="text-center fw-bold p-4" id="Title">
                     <i>Launch Survey</i>
                 </h3>
 
-                <p class="text-center">Launch Survey Here</p>
+                @if (auth()->user()->level != 'superAdmin' && auth()->user()->level != 'staffAdmin')
+                    <h3 class="text-center fw-bold p-4" id="Title">
+                        <i>You don't have permissions to perform this action!!!!</i>
+                    </h3>
+                @else
+                    @if ($scheduled_survey)
+                        <h3 class="text-center fw-bold p-4" id="Title">
+                            <i>There is an already active survey. You cannot create another!</i>
+                        </h3>
 
+                        <form action="{{ route('edit.scheduled.survey', ['user_id' => auth()->user()->id, 'scheduled_survey_id' => $scheduled_survey->id]) }}" method="POST">
+                            @csrf
+                            <div class="text-center">
+                                <label class="form-label fw-bold" for="survey_name">Survey Name</label>
+                                <input class="form-control mx-auto w-25" type="text" name="survey_name" value="{{ $scheduled_survey->survey_name }}" placeholder="e.g. ICS - H1 202x" title="Enter End Time">
+                            </div>
+
+                            <div class="col-12 d-flex gap-3">
+                                <div class="col-6">
+                                    <div class="ms-5 mt-3">
+                                        <input class="form-control" type="date" name="start_date" value="{{ $scheduled_survey->start_date }}" placeholder="Start Date" title="Start Date">
+                                    </div>
+                                    <div class="ms-5 mt-3">
+                                        <input class="form-control" type="time" name="time_start" disabled value="{{ $scheduled_survey->start_time }}" placeholder="Start Time" title="Start Time">
+                                        <input class="form-control" type="hidden" name="start_time" value="{{ $scheduled_survey->start_time }}" placeholder="Start Time" title="Start Time">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="ms-5 mt-3">
+                                        <input class="form-control" type="date" name="end_date" value="{{ $scheduled_survey->end_date }}" placeholder="End Date" title="End Date">
+                                    </div>
+                                    <div class="ms-5 mt-3">
+                                        <input class="form-control" type="time" name="end_time" value="{{ $scheduled_survey->end_time }}" placeholder="End Time" title="End Time">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fw-bold mt-4">
+                                <button class="btn btn-outline-success">Schedule a Survey!</button>
+                            </div>
+                        </form>
+
+                    @else
+                        <form action="{{ route('schedule.survey', ['user_id' => auth()->user()->id]) }}" method="POST">
+                            @csrf
+                            <div class="text-center">
+                                <label class="form-label fw-bold" for="survey_name">Survey Name</label>
+                                <input class="form-control mx-auto w-25" type="text" name="survey_name" placeholder="e.g. ICS - H1 202x" title="Enter End Time">
+                            </div>
+
+                            <div class="col-12 d-flex gap-3">
+                                <div class="col-6">
+                                    <div class="ms-5 mt-3">
+                                        <input class="form-control" type="date" name="start_date" placeholder="Enter Start Date" title="Enter Start Date">
+                                    </div>
+                                    <div class="ms-5 mt-3">
+                                        <input class="form-control" type="time" name="start_time" placeholder="Enter Start Time" title="Enter Start Time">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="ms-5 mt-3">
+                                        <input class="form-control" type="date" name="end_date" placeholder="Enter End Date" title="Enter End Date">
+                                    </div>
+                                    <div class="ms-5 mt-3">
+                                        <input class="form-control" type="time" name="end_time" placeholder="Enter End Time" title="Enter End Time">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="fw-bold mt-4">
+                                <button class="btn btn-outline-success">Schedule a Survey!</button>
+                            </div>
+                        </form>
+                    @endif
+                    
+                @endif
             </div>
 
 {{-- --------------------------------------- NOTIFICATIONS SECTION ----------------------------------------- --}}

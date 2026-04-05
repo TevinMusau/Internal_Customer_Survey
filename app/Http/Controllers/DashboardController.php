@@ -6,6 +6,7 @@ use App\Models\Completed_Managing_Partner_Survey;
 use App\Models\Completed_Supervisor_Survey;
 use App\Models\Staff_Survey_Department_Completed;
 use App\Models\SurveyQuestion;
+use App\Models\SurveySchedule;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Department;
@@ -52,6 +53,11 @@ class DashboardController extends Controller
             $completed_staff_survey = true;
         }
 
+        // check if there is an already active survey
+        $active_survey = SurveySchedule::where('is_active', 1)->first();
+
+        $scheduled_survey = $active_survey ?? null;        
+
         // get the all questions
         $all_questions = QuestionCategory::with('survey_question.department')
                                     ->join('survey_questions', 'question_categories.id', '=', 'survey_questions.question_category_id')
@@ -72,7 +78,7 @@ class DashboardController extends Controller
         // get all comments
         $comments = Comment::with(['commentor', 'commentee'])->get();
 
-        return view('dashboard', compact('users', 'admins', 'departments', 'question_categories', 'completed_managing_partner_survey', 'completed_supervisor_survey', 'completed_staff_survey', 'all_questions', 'comments'));
+        return view('dashboard', compact('users', 'admins', 'departments', 'question_categories', 'completed_managing_partner_survey', 'completed_supervisor_survey', 'completed_staff_survey', 'all_questions', 'comments', 'scheduled_survey'));
     }
 
     function newUserPage($id) {

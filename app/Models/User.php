@@ -103,4 +103,9 @@ class User extends Authenticatable
     public function managing_partner_survey_completed(){
         return $this->hasOne(Completed_Managing_Partner_Survey::class);
     }
+
+    // Relationship to Survey Schedules Table (One-To-Many)
+    public function survey_schedule(){
+        return $this->hasMany(SurveySchedule::class, 'created_by');
+    }
 }
