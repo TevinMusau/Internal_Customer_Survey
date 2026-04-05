@@ -67,6 +67,14 @@ class SurveysController extends Controller
         // find the scheduled Survey
         $scheduled_survey = SurveySchedule::findOrFail($scheduled_survey_id);
 
+        // validate the input
+        $request->validate([
+            'start_date'        => 'required|date|after_or_equal:today',
+            'start_time'        => 'required',
+            'end_date'          => 'required|date|after_or_equal:start_date',
+            'end_time'          => 'required|after:start_time',
+        ]);
+
         // set the new details entered
         $scheduled_survey->created_by = $user_id;
         $scheduled_survey->survey_name = $request->input('survey_name');
