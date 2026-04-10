@@ -34,4 +34,9 @@ class Department extends Model
     public function department_results(){
         return $this->hasMany(Staff_Survey_Result::class);
     }
+
+    // Relationship to Final Ratings Table
+    public function final_ratings(){
+        return $this->hasMany(Final_Rating::class, 'department_id');
+    }
 }

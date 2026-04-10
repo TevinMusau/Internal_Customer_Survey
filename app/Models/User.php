@@ -108,4 +108,16 @@ class User extends Authenticatable
     public function survey_schedule(){
         return $this->hasMany(SurveySchedule::class, 'created_by');
     }
+
+    public function final_ratings(){
+        return $this->hasMany(Final_Rating::class, 'user_id');
+    }
+
+    public function supervisor_final_ratings(){
+        return $this->hasMany(Final_Rating::class, 'supervisor_id', 'user_id');
+    }
+
+    public function managing_partner_final_ratings(){
+        return $this->hasMany(Final_Rating::class, 'managing_partner_id', 'user_id');
+    }
 }

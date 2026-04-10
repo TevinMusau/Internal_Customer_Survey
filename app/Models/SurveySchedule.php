@@ -20,4 +20,7 @@ class SurveySchedule extends Model
     public function user(){
         return $this->belongsToMany(User::class, 'created_by', 'id');
     }
+    public function final_ratings(){
+        return $this->hasMany(Final_Rating::class, 'survey_schedule_id');
+    }
 }
