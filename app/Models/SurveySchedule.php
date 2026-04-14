@@ -23,4 +23,8 @@ class SurveySchedule extends Model
     public function final_ratings(){
         return $this->hasMany(Final_Rating::class, 'survey_schedule_id');
     }
+
+    public function survey_report(){
+        return $this->hasMany(SurveyReport::class);
+    }
 }

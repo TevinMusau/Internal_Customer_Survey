@@ -120,4 +120,8 @@ class User extends Authenticatable
     public function managing_partner_final_ratings(){
         return $this->hasMany(Final_Rating::class, 'managing_partner_id', 'user_id');
     }
+
+    public function survey_report(){
+        return $this->hasMany(SurveyReport::class);
+    }
 }

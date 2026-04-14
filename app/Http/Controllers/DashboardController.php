@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Completed_Managing_Partner_Survey;
 use App\Models\Completed_Supervisor_Survey;
 use App\Models\Staff_Survey_Department_Completed;
-use App\Models\SurveyQuestion;
+use Spatie\LaravelPdf\Facades\Pdf;
+use Spatie\Browsershot\Browsershot;
+
 use App\Models\SurveySchedule;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Department;
 use App\Models\QuestionCategory;
 use App\Models\Comment;
+use App\Models\SurveyQuestion;
 
 
 class DashboardController extends Controller
