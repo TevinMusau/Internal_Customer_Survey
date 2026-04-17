@@ -78,6 +78,7 @@
                                     </h2>
                                     @php $counter++; @endphp
                             @endif
+                            <div class="accordion-item">
                                 <div id="flush-collapse-{{ $question_category->id }}" class="accordion-collapse collapse" aria-labelledby="heading-{{ $question_category->id }}" data-bs-parent="#accordionFlushExample">
                                     <div class="accordion-body">
                                         <p>{{ $survey_question->sub_category_name }}</p>
@@ -91,7 +92,7 @@
                                                 @for ($i = 5; $i >= 1; $i--)
                                                     <input type="radio" 
                                                         name="ratings[{{ $survey_question->id }}]" 
-                                                        value="{{ $i }}"
+                                                        value="{{ $i }}">
                                                         {{-- {{ old(key: "ratings.$survey_question->id.$managing_partner->id") == $i ? 'checked' : '' }}> --}}
                                                     <label>
                                                         @if($i == 5) Exceptional
@@ -110,7 +111,10 @@
                             </div>
                         @endif
                     @endforeach
+            </div>
                 @endforeach
+
+            <div class="accordion accordion-flush" id="accordionFlushExample">
 
                 <div class="accordion-item">
                     <h2 class="accordion-header">

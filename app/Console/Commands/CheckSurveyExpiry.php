@@ -16,8 +16,6 @@ use Spatie\LaravelPdf\Facades\Pdf;
 use Spatie\Browsershot\Browsershot;
 
 
-
-
 class CheckSurveyExpiry extends Command
 {
     /**

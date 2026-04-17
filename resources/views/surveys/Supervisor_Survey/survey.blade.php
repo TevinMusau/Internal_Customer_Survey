@@ -109,33 +109,34 @@
                         @endif
                     @endforeach
                 @endforeach
+            </div>
 
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-toggle="collapse" data-bs-target="#flush-collapse" aria-expanded="false" aria-controls="flush-collapse">
-                            Comments
-                        </button>
-                    </h2>
-                    <div id="flush-collapse" class="accordion-collapse collapse" aria-labelledby="heading" data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body">
-                            <p>Write a comment for your Supervisor:</p>
-                            
-                            <div class="">
-                                <div class="mb-2">
-                                    <div class="mb-3">
-                                        <label for="supervisor_comment" class="form-label">Comment Area</label>
-                                        <textarea class="form-control" id="supervisor_comment" rows="3" name="supervisor_comment"></textarea>
+                <div class="accordion accordion-flush" id="accordionFlushExample">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-toggle="collapse" data-bs-target="#flush-collapse" aria-expanded="false" aria-controls="flush-collapse">
+                                Comments
+                            </button>
+                        </h2>
+                        <div id="flush-collapse" class="accordion-collapse collapse" aria-labelledby="heading" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">
+                                <p>Write a comment for your Supervisor:</p>
+                                
+                                <div class="">
+                                    <div class="mb-2">
+                                        <div class="mb-3">
+                                            <label for="supervisor_comment" class="form-label">Comment Area</label>
+                                            <textarea class="form-control" id="supervisor_comment" rows="3" name="supervisor_comment"></textarea>
+                                        </div>
                                     </div>
                                 </div>
+                                <hr>
                             </div>
-                            <hr>
                         </div>
                     </div>
                 </div>
 
 {{--------------------- END OF SUPERVISOR QUESTION CATEGORIES AND SURVEY QUESTIONS -----------------------------------------}}
-
-            </div>
             <input class="form-control btn btn-outline-success" type="submit">
         </form>
     </div>
