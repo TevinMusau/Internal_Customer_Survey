@@ -16,6 +16,8 @@
         "laravel/ui": "^4.6",
         "spatie/browsershot": "^5.2",
         "spatie/laravel-pdf": "^2.5",
+        "symfony/http-client": "^7.4",
+        "symfony/mailgun-mailer": "^7.4",
         "twbs/bootstrap-icons": "^1.13"
     },
     "require-dev": {

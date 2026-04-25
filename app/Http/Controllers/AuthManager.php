@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Password;
 
 
 class AuthManager extends Controller
@@ -62,5 +63,52 @@ class AuthManager extends Controller
         Session::flush();
         Auth::logout();
         return redirect(route('login'))->with('success', 'Logout Successful!');
+    }
+
+    //send password reset link
+    function sendResetLink(Request $request){
+        
+        // validate the input
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return back()->with('success', 'Password reset link sent to your email.');
+        }
+
+        return back()->with('error', 'We could not find an account with that email address.');
+
+    }
+
+    public function showResetForm(string $token)
+    {
+        return view('auth.reset-password', ['token' => $token]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token'                 => 'required',
+            'email'                 => 'required|email',
+            'password'              => 'required|min:8|confirmed', // confirmed checks password_confirmation field
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill(['password' => bcrypt($password)])->save();
+            }
+        );
+
+        if ($status === Password::PASSWORD_RESET) {
+            return redirect()->route('login')->with('success', 'Password reset successfully. Please log in.');
+        }
+
+        return back()->with('error', 'Invalid or expired reset link.');
     }
 }
