@@ -15,6 +15,11 @@ Route::get('/', function () {
     return view('index');
 })->name('home');
 
+Route::get('/test', function () {
+    return view('newdashboard');
+});
+
+
 // -------------------------------- LOGIN ROUTES -------------------------------------------
 Route::get('/login', [AuthManager::class, 'login'])->name('login');
 Route::post('/login', [AuthManager::class, 'loginPost'])->name('login.post');
@@ -29,17 +34,77 @@ Route::post('/reset-password', [AuthManager::class, 'resetPassword'])->name('pas
 Route::get('/logout', [AuthManager::class, 'logout'])->name('logout');
 
 
-// -------------------------------- Dashboard Route -------------------------------------
+// -------------------------------- Dashboard Routes -------------------------------------
+// to dashboard
 Route::get('/dashboard/{id}', [DashboardController::class, 'dashboard'])->name('dashboard');
-Route::get('/dashboard/{id}/new-user', [DashboardController::class, 'newUserPage'])->name('new.user');
-Route::get('/dashboard/{admin_id}/{user_id}/delete-user', [DashboardController::class, 'deleteUser'])->name('delete.user');
 
-// create new user route
-Route::post('/dashboard/{id}/new-user', [NewUserController::class, 'createUser'])->name('createNewUser');
-
+// ---- USER ROUTES -----
+// view all users
+Route::get('/dashboard/{id}/allusers', [DashboardController::class, 'viewAllUsers'])->name('view.allusers');
+// filters for view all users table
+Route::get('/dashboard/{id}/allusers', [DashboardController::class, 'viewAllUsers'])->name('view.allusers');
 // edit user details
 Route::get('/dashboard/{admin_id}/{user_id}/edit-user', [EditUserController::class, 'toEditPage'])->name('edit.user');
 Route::post('/dashboard/{admin_id}/{user_id}/edit-user', [EditUserController::class, 'editDetails'])->name('edit.user.post');
+//delete user
+Route::get('/dashboard/{admin_id}/{user_id}/delete-user', [DashboardController::class, 'deleteUser'])->name('delete.user');
+// create new user
+Route::get('/dashboard/{id}/new-user', [DashboardController::class, 'newUserPage'])->name('new.user');
+Route::post('/dashboard/{id}/new-user', [NewUserController::class, 'createUser'])->name('createNewUser');
+
+// ---- ADMIN ROUTES -----
+// view all admins
+Route::get('/dashboard/{id}/alladmins', [DashboardController::class, 'viewAllAdmins'])->name('view.alladmins');
+
+// ---- DEPARTMENT ROUTES ----
+
+// view all departments
+Route::get('/dashboard/{id}/alldepartments', [DashboardController::class, 'viewAllDepartments'])->name('view.alldepartments');
+// to new department page
+Route::get('/dashboard/{admin_id}/departments/', [DashboardController::class, 'toNewDepartmentPage'])->name('view.departments');
+// create new department
+Route::post('/dashboard/{admin_id}/departments/', [DepartmentController::class, 'createNewDepartment'])->name('create.department');
+// to edit department page
+Route::get('/dashboard/{admin_id}/{department_id}/edit-department', [DepartmentController::class, 'toEditDepartmentPage'])->name('edit.department');
+// edit department
+Route::post('/dashboard/{admin_id}/{department_id}/edit-department', [DepartmentController::class, 'editDepartment'])->name('edit.department.post');
+// delete department
+Route::get('/dashboard/{admin_id}/{department_id}/delete-department', [DepartmentController::class, 'deleteDepartment'])->name('delete.department');
+
+// ---- LAUNCH SURVEY ROUTES ----
+// to schedule survey page
+Route::get('/dashboard/{user_id}/schedule-survey', [SurveysController::class, 'toScheduleSurveyPage'])->name('schedule.survey.page');
+// schedule survey
+Route::post('/dashboard/{user_id}/schedule-survey', [SurveysController::class, 'scheduleSurvey'])->name('schedule.survey');
+// edit scheduled survey
+Route::post('/dashboard/{scheduled_survey_id}/{user_id}/edit-scheduled-survey', [SurveysController::class, 'editScheduledSurvey'])->name('edit.scheduled.survey');
+
+
+// ---- SURVEY ROUTES ----
+// to view all surveys page
+Route::get('/dashboard/{user_id}/all-survey', [SurveysController::class, 'viewAllSurveys'])->name('view.surveys');
+
+// ---- QUESTION ROUTES ----
+// to survey questions page
+Route::get('/dashboard/{user_id}/all-survey-questions', [SurveysController::class, 'viewAllSurveyQuestions'])->name('survey.questions');
+
+// SURVEY RESPONDENTS ROUTES
+Route::get('/dashboard/{user_id}/all-survey-respondents', [SurveysController::class, 'viewSurveyRespondents'])->name('survey.respondents');
+
+// COMMENTS ROUTES
+Route::get('/dashboard/{user_id}/all-comments', [CommentsController::class, 'viewAllComments'])->name('view.allcomments');
+Route::post('/dashboard/{user_id}/all-comments', [CommentsController::class, 'createNewComment'])->name('new.comment');
+
+
+
+
+
+
+
+
+
+
+
 
 
 // questions routes
@@ -52,9 +117,6 @@ Route::get('/dashboard/{comment_id}/{user_id}/edit-comment', [CommentsController
 Route::post('/dashboard/{comment_id}/{user_id}/edit-comment', [CommentsController::class, 'editCommentDetails'])->name('edit.comment.post');
 Route::get('/dashboard/{comment_id}/{user_id}/delete-comment', [CommentsController::class, 'deleteComment'])->name('delete.comment');
 
-// schedule survey routes
-Route::post('/dashboard/{user_id}/schedule-survey', [SurveysController::class, 'scheduleSurvey'])->name('schedule.survey');
-Route::post('/dashboard/{scheduled_survey_id}/{user_id}/edit-scheduled-survey', [SurveysController::class, 'editScheduledSurvey'])->name('edit.scheduled.survey');
 
 
 
@@ -84,13 +146,4 @@ Route::post('/dashboard/{user_id}/{supervisor_id}/surveys/supervisor-survey/subm
 
 Route::post('/dashboard/{user_id}/q_category/create', [QuestionCategoryController::class, 'store'])->name('create.category');
 Route::post('/dashboard/{user_id}/survey_question/create', [QuestionsController::class, 'store'])->name('create.question');
-
-// department routes
-Route::get('/dashboard/{admin_id}/departments/', [DashboardController::class, 'toNewDepartmentPage'])->name('view.departments');
-Route::post('/dashboard/{admin_id}/departments/', [DepartmentController::class, 'createNewDepartment'])->name('create.department');
-
-Route::get('/dashboard/{admin_id}/{department_id}/edit-department', [DepartmentController::class, 'toEditDepartmentPage'])->name('edit.department');
-Route::post('/dashboard/{admin_id}/{department_id}/edit-department', [DepartmentController::class, 'editDepartment'])->name('edit.department.post');
-
-Route::get('/dashboard/{admin_id}/{department_id}/delete-department', [DepartmentController::class, 'deleteDepartment'])->name('delete.department');
 

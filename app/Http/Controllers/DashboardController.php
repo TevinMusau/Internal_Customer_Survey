@@ -34,14 +34,24 @@ class DashboardController extends Controller
         // get all users
         $users = User::with('departments')->get();
 
+        $user_count = $users->count();
+
+        // get a count of all comments
+        $comments_count = Comment::all();
+        $comments_count = $comments_count->count();
+
         // get all departments
         $departments = Department::with('users')->get();
+
+        $department_count = $departments->count();
 
         // get all question categories
         $question_categories = QuestionCategory::with('department')->get();
 
         // get all admins
         $admins = User::with('departments')->where('level', '!=', 'normalUser')->get();
+
+        $admin_count = $admins->count();
 
         $completed_managing_partner_survey = Completed_Managing_Partner_Survey::where('user_id', $id)->first();
 
@@ -52,7 +62,7 @@ class DashboardController extends Controller
         $department_surveys_completed_by_user = Staff_Survey_Department_Completed::where('user_id', $id)->get();
 
         // check if the user has done surveys for all departments
-        if ($departments->count() != $department_surveys_completed_by_user->count()){
+        if ($department_count != $department_surveys_completed_by_user->count()){
             $completed_staff_survey = false;
         } else {
             $completed_staff_survey = true;
@@ -83,8 +93,124 @@ class DashboardController extends Controller
         // get all comments
         $comments = Comment::with(['commentor', 'commentee'])->get();
         
+        return view('newdashboard', compact('users', 'user_count', 'admins', 'admin_count', 'departments', 'department_count', 'question_categories', 'completed_managing_partner_survey', 'completed_supervisor_survey', 'completed_staff_survey', 'all_questions', 'comments', 'scheduled_survey', 'comments_count'));
+    }
 
-        return view('dashboard', compact('users', 'admins', 'departments', 'question_categories', 'completed_managing_partner_survey', 'completed_supervisor_survey', 'completed_staff_survey', 'all_questions', 'comments', 'scheduled_survey'));
+    function viewAllUsers($id, Request $request){
+        // if user is not logged in, redirect to the login page with a warning message
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // get the currently logged in user's ID
+        $current_user = User::find($id);
+
+        // get all users
+        $users = User::with('departments')->get();
+
+        // Filter by name
+        if ($request->filled('name')) {
+            $users->where(function($q) use ($request) {
+                $q->where('first_name', 'like', '%' . $request->name . '%')
+                ->orWhere('last_name', 'like', '%' . $request->name . '%');
+            });
+        }
+
+        // Filter by role
+        if ($request->filled('role')) {
+            $users->where('role', $request->role);
+        }
+
+        // Filter by level
+        if ($request->filled('level')) {
+            $users->where('level', $request->level);
+        }
+
+        // Filter by supervisor
+        if ($request->filled('supervisor')) {
+            $users->where('isSupervisor', $request->supervisor === 'Yes');
+        }
+
+        // Filter by department
+        if ($request->filled('dept')) {
+            $users->whereHas('departments', function($q) use ($request) {
+                $q->where('name', $request->dept);
+            });
+        }
+
+        
+        $departments = Department::all();
+
+        return view('dashboard.all-users', compact('users', 'departments'));
+    }
+
+    function viewAllAdmins($id, Request $request){
+        // if user is not logged in, redirect to the login page with a warning message
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // get the currently logged in user's ID
+        $current_user = User::find($id);
+
+        // get all admins
+        $admins = User::with('departments')->get();
+
+        // Filter by name
+        if ($request->filled('name')) {
+            $admins->where(function($q) use ($request) {
+                $q->where('first_name', 'like', '%' . $request->name . '%')
+                ->orWhere('last_name', 'like', '%' . $request->name . '%');
+            });
+        }
+
+        // Filter by role
+        if ($request->filled('role')) {
+            $admins->where('role', $request->role);
+        }
+
+        // Filter by level
+        if ($request->filled('level')) {
+            $admins->where('level', $request->level);
+        }
+
+        // Filter by supervisor
+        if ($request->filled('supervisor')) {
+            $admins->where('isSupervisor', $request->supervisor === 'Yes');
+        }
+
+        // Filter by department
+        if ($request->filled('dept')) {
+            $admins->whereHas('departments', function($q) use ($request) {
+                $q->where('name', $request->dept);
+            });
+        }
+
+        $departments = Department::all();
+
+        return view('dashboard.all-admins', compact('admins', 'departments'));
+    }
+
+    function viewAllDepartments($id, Request $request){
+        // if user is not logged in, redirect to the login page with a warning message
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // get the currently logged in user's ID
+        $current_user = User::find($id);
+
+        // get all departments
+        $departments = Department::with('users')->get();
+
+        // Filter by department
+        if ($request->filled('dept')) {
+            $departments->whereHas('departments', function($q) use ($request) {
+                $q->where('name', $request->dept);
+            });
+        }
+
+        return view('dashboard.all-departments', compact('departments'));
     }
 
     function newUserPage($id) {

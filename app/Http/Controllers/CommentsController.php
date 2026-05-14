@@ -10,6 +10,22 @@ use App\Models\User;
 
 class CommentsController extends Controller
 {
+
+    function viewAllComments($user_id){
+        // if user is not logged in, redirect to the login page with a warning message
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // get all comments
+        $comments = Comment::all();
+
+        // get all users
+        $users = User::all();
+
+        return view('dashboard.all-comments', compact('comments', 'users'));
+    }
+
     function toEditCommentPage($comment_id, $user_id){
         
         // if user is not logged in, redirect to the login page
@@ -40,6 +56,33 @@ class CommentsController extends Controller
         ]);
 
         return redirect('/dashboard/'.$user_id)->with('success', 'Comment Successfully Updated');
+    }
+
+    function createNewComment(Request $request, $user_id){
+        // if user is not logged in, redirect to the login page with a warning message
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // validate form input
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'title'   => 'required|string|max:255',
+            'comment' => 'required|string',
+        ]);
+
+        $data['comment_by'] = $user_id;
+        $data['comment_about'] = $request->user_id;
+        $data['title'] = $request->title;
+        $data['comment'] = $request->comment;
+        $data['date'] = today()->toDateString();;
+        $data['comment_type'] = 'General';
+
+        // create the comment
+        Comment::create($data);
+
+        // redirect back
+        return redirect()->back()->with('success', 'Comment created successfully.');
     }
 
     function deleteComment($comment_id, $user_id){

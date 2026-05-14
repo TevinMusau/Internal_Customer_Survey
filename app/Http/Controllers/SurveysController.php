@@ -21,6 +21,99 @@ use App\Models\Staff_Survey_Department_Completed;
 class SurveysController extends Controller
 {
 
+    function viewAllSurveys ($user_id) {
+        // if user is not logged in, redirect to the login page
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // get all departments
+        $departments = Department::with('users')->get();
+
+        $completed_managing_partner_survey = Completed_Managing_Partner_Survey::where('user_id', $user_id)->first();
+
+        $completed_supervisor_survey = Completed_Supervisor_Survey::where('user_id', $user_id)->first();
+
+        // check if the user has completed the staff survey
+        // check if the user has completed survey for some departments
+        $department_surveys_completed_by_user = Staff_Survey_Department_Completed::where('user_id', $user_id)->get();
+
+        // check if the user has done surveys for all departments
+        if ($departments->count() != $department_surveys_completed_by_user->count()){
+            $completed_staff_survey = false;
+        } else {
+            $completed_staff_survey = true;
+        }
+
+        return view('dashboard.all-surveys', compact('completed_managing_partner_survey', 'completed_supervisor_survey', 'completed_staff_survey'));
+    }
+
+    function viewAllSurveyQuestions($user_id) {
+        // if user is not logged in, redirect to the login page
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // get all departments
+        $departments = Department::all();
+
+        // get all question categories
+        $question_categories = QuestionCategory::with('department')->get();
+
+
+        // get the all questions
+        $all_questions = QuestionCategory::with('survey_question.department')
+                                    ->join('survey_questions', 'question_categories.id', '=', 'survey_questions.question_category_id')
+                                    ->select(
+                                        'question_categories.id',
+                                        'survey_questions.id as survey_question_id',
+                                        'question_categories.category_name as question_category',
+                                        'survey_questions.sub_category_name',
+                                        'survey_questions.sub_category_description as description',
+                                        'survey_questions.question',
+                                        'survey_questions.appears_in as appears_in',
+                                        'survey_questions.affects_all_department as departments_affected',
+                                        'question_categories.appears_in_all_departments',
+                                    )
+                                    ->get()
+                                    ->groupBy('question_category');
+
+        return view('dashboard.all-survey-questions', compact('all_questions', 'departments', 'question_categories'));
+    }
+
+    function viewSurveyRespondents($user_id){
+        // if user is not logged in, redirect to the login page
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // get all the users who have completed Managing Partner Survey
+        $completed_mp_survey = Completed_Managing_Partner_Survey::with('user')->get();
+
+        // get all users who have completed Staff Survey
+        $completed_staff_survey = Completed_Staff_Survey::with('user')->get();
+
+        // get all users who have completed Supervisor Survey
+        $completed_supervisor_survey = Completed_Supervisor_Survey::with('user')->get();
+
+        return view('dashboard.survey-respondents', compact('completed_mp_survey', 'completed_staff_survey', 'completed_supervisor_survey'));
+
+    }
+
+    function toScheduleSurveyPage($user_id){
+        // if user is not logged in, redirect to the login page
+        if(!auth()->user()){
+            return redirect('login')->with('warning', 'You Must First Login!');
+        }
+
+        // check if there is an already active survey
+        $active_survey = SurveySchedule::where('is_active', 1)->first();
+
+        $scheduled_survey = $active_survey ?? null;        
+
+        return view('dashboard.schedule-survey', compact('user_id', 'scheduled_survey'));
+    }
+
     function scheduleSurvey(Request $request, $user_id){
 
         // validate the input
@@ -140,7 +233,10 @@ class SurveysController extends Controller
         // get all question categories that appear in all departments only
         $mp_question_categories = QuestionCategory::where('appears_in_all_departments', 1)->get();
 
-        return view('surveys.Managing_Partner.survey', compact('common_department_question_categories', 'managing_partner', 'mp_question_categories'));
+        // get all question categories that appear in all departments only
+        $mp_role_specific_question_categories = QuestionCategory::where('appears_in_all_departments', 0)->get();
+
+        return view('surveys.Managing_Partner.survey', compact('common_department_question_categories', 'managing_partner', 'mp_question_categories', 'mp_role_specific_question_categories'));
     }
 
     function submitManagingPartnerSurvey($user_id, Request $request){
@@ -162,6 +258,9 @@ class SurveysController extends Controller
         // get the managing partner
         $managing_partner = User::where('isManagingPartner', 1)->first();
 
+        // get all role specific question categories for specific departments
+        $managing_partner_specific_question_categories = QuestionCategory::where('appears_in_all_departments', 0)->get();
+
 
 // ---------------------------- MANAGING PARTNER COMMENT VALIDATION ------------------------------------
 
@@ -175,6 +274,23 @@ class SurveysController extends Controller
 // ---------------------------- MANAGING PARTNER SPECIFIC QUESTIONS VALIDATION ------------------------------------
         
         foreach ($mp_question_categories as $category) {
+
+            foreach ($category->survey_question as $question) {
+
+                if ($question->appears_in == 3) {
+
+                    if (!isset($request->ratings[$question->id])) {
+                        return back()->withErrors([
+                            'ratings' => 'Managing Partner must be rated for every question.'
+                        ]);
+                    }
+                }
+            }
+        }
+
+// ------------------------------- SUPERVISOR SURVEY SPECIFIC QUESTIONS VALIDATION ---------------------------------
+
+        foreach ($managing_partner_specific_question_categories as $category) {
 
             foreach ($category->survey_question as $question) {
 
@@ -525,10 +641,14 @@ class SurveysController extends Controller
         // get the selected supervisor
         $selected_supervisor = User::find($request->supervisor);
 
+        // get question categories and survey questions that specific to the supervisor survey
+        // these are supervisor role specific questions
+        $supervisor_survey_questions = QuestionCategory::where('appears_in_all_departments', 0)->get();
+
         // get supervisor survey questions
         $supervisor_question_categories = QuestionCategory::where('appears_in_all_departments', 1)->get();
 
-        return view('surveys.Supervisor_Survey.survey', compact('supervisor_question_categories', 'selected_supervisor'));
+        return view('surveys.Supervisor_Survey.survey', compact('supervisor_question_categories', 'selected_supervisor', 'supervisor_survey_questions'));
     }
 
     function submitSupervisorSurvey($user_id, $supervisor_id, Request $request){
@@ -547,6 +667,9 @@ class SurveysController extends Controller
         // get all question categories common for all departments
         $supervisor_question_categories = QuestionCategory::where('appears_in_all_departments', 1)->get();
 
+        // get all question categories common for all departments
+        $supervisor_specific_question_categories = QuestionCategory::where('appears_in_all_departments', 0)->get();
+
         // get the supervisor
         $supervisor = User::find($supervisor_id);
 
@@ -557,6 +680,7 @@ class SurveysController extends Controller
             ]);
         }
 
+// ------------------------------- SUPERVISOR SURVEY COMMON QUESTIONS VALIDATION ---------------------------------
         foreach ($supervisor_question_categories as $category) {
 
             foreach ($category->survey_question as $question) {
@@ -571,6 +695,24 @@ class SurveysController extends Controller
                 }
             }
         }
+
+// ------------------------------- SUPERVISOR SURVEY SPECIFIC QUESTIONS VALIDATION ---------------------------------
+
+        foreach ($supervisor_specific_question_categories as $category) {
+
+            foreach ($category->survey_question as $question) {
+
+                if ($question->appears_in == 2) {
+
+                    if (!isset($request->ratings[$question->id])) {
+                        return back()->withErrors([
+                            'ratings' => 'Supervisor must be rated for every question.'
+                        ]);
+                    }
+                }
+            }
+        }
+
 
         foreach ($request->ratings as $question_id => $rating) {
 

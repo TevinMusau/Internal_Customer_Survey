@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('initials');
             $table->boolean('isSupervisor')->default('0');
             $table->boolean('isManagingPartner')->default('0');
+            $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();
         });

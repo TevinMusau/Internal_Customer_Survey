@@ -163,18 +163,20 @@
                 </h3>
                 <div class="table-responsive">
                     <table class="table table-hover table-striped table-borderless m-3">
-                        <tbody>
-                            <thead class="table-dark">
-                                <th class="text-center">First Name</th>
-                                <th class="text-center">Last Name</th>
-                                <th class="text-center">Email</th>
-                                <th class="text-center">Department</th>
-                                <th class="text-center">Role</th>
-                                <th class="text-center">Level</th>
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="text-center text-white" style="background-color: rgb(0, 97, 104);">First Name</th>
+                                <th class="text-center text-white" style="background-color: rgb(0, 97, 104);">Last Name</th>
+                                <th class="text-center text-white" style="background-color: rgb(0, 97, 104);">Email</th>
+                                <th class="text-center text-white" style="background-color: rgb(0, 97, 104);">Department</th>
+                                <th class="text-center text-white" style="background-color: rgb(0, 97, 104);">Role</th>
+                                <th class="text-center text-white" style="background-color: rgb(0, 97, 104);">Level</th>
                                 @if (auth()->user()->level == 'superAdmin' || auth()->user()->level == 'staffAdmin')
-                                <th class="text-center" colspan="5">Action</th>
+                                <th class="text-center text-white" style="background-color: rgb(0, 97, 104);" colspan="5">Action</th>
                                 @endif
-                            </thead>
+                            </tr>
+                        </thead>
+                        <tbody>
                             @foreach ($admins as $admin)
                             <tr>
                                 <td class="text-center">{{ $admin->first_name }}</td>

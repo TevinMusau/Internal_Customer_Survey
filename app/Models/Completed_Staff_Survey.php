@@ -11,4 +11,8 @@ class Completed_Staff_Survey extends Model
         'user_id',
         'date',
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }
